@@ -1,0 +1,38 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-22 17:48:08
+ * @LastEditTime: 2022-04-29 14:53:06
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.两数之和.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美 - 冒泡</title>
+	</head>
+	<body></body>
+	<script>
+                // 固定算法 固定思路
+        //       从左往右冒 与插入相反(把大的先放后面)
+        const A = [77,2,3,67,4,5,66,7,9,11,13]
+        const bubblesort  = function(A) {
+                const len = A.length
+                if (len === 0)  return
+                for (let i = len-1; i>=1; i--) {
+                        for (let j = 1; j <=i; j++) {
+                                if(A[j-1]>A[j]){
+                                        const t = A[j-1]
+                                        A[j-1] = A[j]
+                                        A[j] = t
+                                }
+                        }
+                }
+        }
+        bubblesort(A)
+        console.log(A);
+	</script>
+</html>

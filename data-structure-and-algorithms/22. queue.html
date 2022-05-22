@@ -1,0 +1,152 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-20 17:02:55
+ * @LastEditTime: 2022-04-21 17:38:23
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22. queue.html
+-->
+<!--
+ * @Author: your name
+ * @Date: 2022-04-20 16:18:01
+ * @LastEditTime: 2022-04-20 16:56:08
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.stack.html
+-->
+<!--
+ * @Author: your name
+ * @Date: 2022-03-30 09:35:45
+ * @LastEditTime: 2022-03-31 14:31:51
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\4. stack.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美 - 队列</title>
+	</head>
+	<body></body>
+	<script>
+        // queue 队列类
+        // 用两个栈实现一个队列
+        const Myqueue = function(){
+           const stack1 = []
+            const stack2 = []
+            //入队
+            add(){
+                this.stack1.push(n)
+            }
+            // 出队
+            delete () {
+                let res
+                const stack1 = this.stack1
+                const stack2 = this.stack2
+                while(stack1.length !== 0){
+                    const n = stack1.pop
+                    if(n !== 0){
+                        stack2.push(n)
+                    }
+                }
+                res = stack2
+                while(stack2.length !== 0){
+                    const n = stack2.pop
+                    if(n !== 0){
+                        stack1.push(n)
+                    }
+                }
+                return res
+            }
+            getlength(){
+                return this.stack1.length
+            }
+        }
+
+(new Queue())
+.addTask(() => console.log(1), 1000)
+.addTask(() => console.log(2), 1000)
+.addTask(() => console.log(3), 1000)
+.start()
+class  Queue {
+constructor() {
+this.stack = [];
+}
+
+sleep(time) {
+return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+addTask(callback, time) {
+this.stack.push({ callback, time });
+return this;
+}
+
+async start() {
+while (this.stack.length) {
+const item = this.stack.pop();
+await this.sleep(item.time);
+item.callback();
+}
+}
+async / await  
+二叉树两个节点的距离, 距离是指从 a 节点到达 b 节点需要经过至少多少条边,
+ 如
+  4 和 5 距离是 2,
+  3 和 4 距离是 3;
+        1
+     2     3
+   4   5 6   7
+8
+[8, 4, 2, 1]
+[5, 2, 1]
+
+[7, 3, 1]
+
+// 数据结构:
+interface Node {
+  depth: number; // 当前节点在树的第几层
+  parent: Node; // 父节点
+  leftChild: Node; // 左子节点
+  rightChild: Node; // 右子节点
+}
+
+function getDistance(a: Node, b: Node) {
+  
+}  
+
+console.log('begin') // 1
+new Promise(() => {
+    console.log('promise 0')
+
+        setTimeout(() => {
+            console.log('setTimeout')
+        })
+
+    Promise.resolve().then(() => {
+        console.log('promise 1')
+        setTimeout(() => {
+            console.log('setTimeout1')
+        })
+        Promise.resolve().then(() => console.log('promise 3'));
+    }).then(() => {
+        console.log('promise 2')
+    })
+});
+console.log('end')
+<A key="1" />
+
+<A key="2" />
+
+keep-alive
+
+computed: {
+a() {
+return this.b + this.c
+}
+}
+	</script>
+</html>

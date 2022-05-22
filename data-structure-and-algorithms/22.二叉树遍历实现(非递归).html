@@ -1,0 +1,75 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-22 17:48:08
+ * @LastEditTime: 2022-04-29 16:45:25
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.两数之和.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美</title>
+	</head>
+	<body></body>
+	<script>
+                // 先头左右 前序遍历
+                // 用一个栈 先先放入第一个节点 弹出一个J节点先压右边在押左
+                const preOrderUnRecur = function(head){
+                        if(head != null){
+                                let stack = new Stack()
+                                stack.add(head)
+                                while(!stack.isEmpty){
+                                        stack.pop()
+                                        if(head.right != null){
+                                                stack.push(head.right)
+                                        }
+                                        if(head.left != null){
+                                                stack.push(head.left)
+                                        }
+                                }
+                        }
+                }
+                // 后序遍历 加一个辅助栈 放出的头呀辅助栈里再从辅助站出 和前序相反
+                const preOrderUnRecur = function(head){
+                        if(head != null){
+                                let stack = new Stack()
+                                let stack1 = new Stack()
+                                stack.add(head)
+                                while(!stack.isEmpty){
+                                        head = stack.pop()
+                                        stack1.push(head)
+                                        if(head.left != null){
+                                                stack.push(head.left)
+                                        }
+                                        if(head.right != null){
+                                                stack.push(head.right)
+                                        }
+                                }
+                                while(!stack1.isEmpty){
+                                       stack1.pop()
+                                }
+                        }
+                }
+                // 先左头右 中序遍历（进栈循序左右头
+                // 用一个栈 先先放入第一个节点 弹出一个J节点先压右边在押左
+                const preOrderUnRecur = function(head){
+                        if(head != null){
+                                let stack = new Stack()
+                                while(!stack.isEmpty || head != null){
+                                        if(head!=null){
+                                                stack.push(head)
+                                                heda = head.left
+                                        }else{
+                                               head = stack.pop()
+                                                console.log(head.value);
+                                                head = head.right
+                                        }
+                                }
+                        }
+                }
+	</script>
+</html>

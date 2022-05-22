@@ -1,0 +1,88 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-22 17:48:08
+ * @LastEditTime: 2022-05-11 11:16:32
+ * @LastEditors: zeng 1805674660@qq.com
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.两数之和.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美 - 快排</title>
+	</head>
+	<body></body>
+	<script>
+                // 固定算法 固定思路
+        //        1,把一个数插入一个已排序的数组中
+        //        JavaScript实现
+        //        const A = [2,3,4,5,7,9,13]
+        //        const X = 8
+        //        const B = A.find(a=>a>X)
+        //        const idx = A.indexOf(B)
+        //        A.splice(idx === -1? A.length:idx,0,X)
+
+        //         function inset(A,X) {
+        //                 let len = A.length
+        //                 while(len>=0 && A[len]>X){
+        //                         A[len+1] = A[len]
+        //                         p--
+        //                 } 
+        //        }
+
+        // // 完整插入过程
+        // function inset(A,i,x){
+        //         let p = i-1
+        //         while(p>=0 && A[p]>x){
+        //                         A[p+1] = A[p]
+        //                         p--
+        //                 }
+        //                 A[p+1] = x
+        // }
+        // // 思路p始终指向已排序的最后一项把小的插入到前面
+        //        function insersort(A){
+        //                let len = A.length
+        //                for (let i = 1; i < len; i++) {
+        //                 this.inset(A,i,A[i])
+        //                }
+        //        }
+        //        const A = [77,2,3,67,4,5,66,7,9,11,13]
+        //        insersort(A)
+        //        console.log(A);
+
+               function insersort(A){
+                       let len = A.length
+                       if(len<2) return
+                       for (let i = 1; i < len; i++) {
+                        for (let j = i-1; j >=0 && A[j]>A[j+1]; j--) {
+                                // swap(A,j,j+1)
+                                const n = A[j]
+                                A[j] = A[j+1]
+                                A[j+1] = n
+                        }
+                       }
+               }
+               function swap(A,i,j){
+                const n = A[i]
+                A[i] = A[j]
+                A[j] = n
+               }
+               const A = [67,4,5,66,7,9,11,13]
+               insersort(A)
+               console.log(A);
+        //        插入排序
+        const insersort = function(A){
+                let len = A.length
+                if(len<2) return
+                for (let i = 0; i < len; i++) {
+                        for (let j = i-1; j >=0 && A[j]>A[j+1]; j--) {
+                                swap(A,j,j+1) 
+                        }
+                        
+                }
+        }
+	</script>
+</html>

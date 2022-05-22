@@ -1,0 +1,97 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-03-30 09:35:45
+ * @LastEditTime: 2022-04-20 16:47:08
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\4. stack.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美 - 循环链表</title>
+	</head>
+	<body></body>
+	<script>
+		Stack类
+		function Stack() {
+			this.items = [];
+
+			// 添加新元素到栈顶
+			this.push = function(element) {
+				this.items.push(element);
+			};
+			// 移除栈顶元素，同时返回被移除的元素
+			this.pop = function() {
+				return this.items.pop();
+			};
+			// 查看栈顶元素
+			this.peek = function() {
+				return this.items[this.items.length - 1];
+			};
+			// 判断是否为空栈
+			this.isEmpty = function() {
+				return this.items.length === 0;
+			};
+			// 清空栈
+			this.clear = function() {
+				this.items = [];
+			};
+			// 查询栈的长度
+			this.size = function() {
+				return this.items.length;
+			};
+			// 打印栈里的元素
+			this.print = function() {
+				console.log(this.items.toString());
+			};
+		}
+
+		// 创建Stack实例
+		var stack = new Stack();
+
+		console.log(stack.isEmpty()); // true
+		stack.push(5); // undefined
+		stack.push(8); // undefined
+		console.log(stack.peek()); // 8
+		stack.push(11); // undefined
+		console.log(stack.size()); // 3
+		console.log(stack.isEmpty()); // false
+		stack.push(15); // undefined
+		stack.pop(); // 15
+		console.log(stack.size()); // 3
+		stack.print(); // 5,8,11
+		stack.clear(); // undefined
+		console.log(stack.size()); // 0
+
+
+
+		const arr = ['kobe', 'james', 'kobe', 'jim', 'wade', 'wade', 'kobe'];
+const res = arr.reduce((acc, cur) => {
+    if(cur in acc) {
+        acc[cur]++;
+    } else {
+        acc[cur] = 1;
+    }
+    return acc
+}, {})
+console.log(res)
+let arr = [1, [2, [3]]]
+// const flatten = function(arr){
+//     return arr.reduce((pre,cur)=>{
+//        return pre.concat(Array.isArray(cur)? flatten(cur): cur) 
+//     },[])
+// }
+const res5 = []
+const fn = arr=>{
+for(let i=0; i <arr.length;i++){
+    Array.isArray(arr[i])?fn(arr[i]):res5.push(arr[i])
+}
+}
+fn(arr)
+console.log(res5);
+	</script>
+</html>

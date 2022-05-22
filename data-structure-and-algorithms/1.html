@@ -1,0 +1,1397 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-03-30 09:37:40
+ * @LastEditTime: 2022-05-07 13:44:39
+ * @LastEditors: zeng 1805674660@qq.com
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\1.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // Promise.resolve().then(()=>{
+        //     console.log(0);
+        //     return Promise.resolve(5)
+        // }).then((res)=>{
+        //     console.log(res);
+        // })
+        // Promise.resolve().then(()=>{
+        //     console.log(1);
+        //     // return Promise.resolve(4)
+        // }).then((res)=>{
+        //     console.log(res);
+        // }).then(()=>{
+        //     console.log(3);
+        // })
+        // .then(()=>{
+        //     console.log(6);
+        // })
+        // .then(()=>{
+        //     console.log(7);
+        // })
+        // Promise.resolve().then(()=>{
+        //     console.log(10);
+        //     // return Promise.resolve(4)
+        // }).then((res)=>{
+        //     console.log(20);
+        // }).then(()=>{
+        //     console.log(30);
+        // })
+        // .then(()=>{
+        //     console.log(50);
+        // })
+        // .then(()=>{
+        //     console.log(60);
+        // })
+        // 知识点promise交替执行
+        // return promise慢两拍 先修改状态 再return promise再执行
+
+        const arr = [
+  {id: 1, name: '部门1', pid: 0},
+  {id: 2, name: '部门2', pid: 1},
+  {id: 3, name: '部门3', pid: 1},
+  {id: 4, name: '部门4', pid: 3},
+  {id: 5, name: '部门5', pid: 4},
+]
+
+const obj = {
+  id: 1,
+  name: "部门1",
+  pid: 0,
+  children: [
+    {
+      id: 2,
+      name: "部门2",
+      pid: 1,
+      children: []
+    },
+    {
+      id: 3,
+      name: "部门3",
+      pid: 1,
+      children: [
+        {
+          id: 4,
+          name: "部门4",
+          pid: 3,
+          children: [
+            {
+              id: 5,
+              name: "部门5",
+              pid:4,
+              children: []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+// function getchilden(arr,id){
+//     const res = []
+//     for (const item of arr) {
+//         if(item.pid === id){
+//             res.push({...item,children: getchilden(arr, item.id)})
+//         }
+//     }
+//     return res
+// }
+// getchilden (arr,0)
+// function arrayToTree(arr){
+//     const result = []
+//     const itemMAP = {}
+//     for (const item of arr) {
+//         itemMAP[item.id] = {...item,children:[]}
+//     }
+//     debugger
+//     for (const item of arr) {
+//         const id = item.id
+//         const pid = item.pid
+//         const treeIten = itemMAP[id]
+//         if(pid === 0){
+//             result.push(treeIten)
+//         }else{
+//             if(!itemMAP[pid]){
+//                 itemMAP[pid] = {
+//                     children: []
+//                 }
+//             }
+//             itemMAP[pid].children.push(treeIten)
+//         }
+//     }
+//     return result
+// }
+// arrayToTree (arr)
+
+// 原型链继承
+// 不能给父级传递私有属性 （子类在实例化的时候不能给父类构造函数传参）
+// 原型中包含的引用类型属性将被所有实例共享（改一个引用数据数据所有都会改 基本数据类型不会修改父类）
+function Animal(name, age) {
+    this.name = name
+    this.age = age
+    this.colors = ['black', 'white']
+}
+Animal.prototype.getColor = function() {
+    console.log(666);
+}
+function Dog() {}
+Dog.prototype =  new Animal('张三', 18)
+
+let dog1 = new Dog()//不能给父级传递私有属性
+dog1.colors.push('brown')
+let dog2 = new Dog()
+dog1.name = '4444'
+dog1.colors.push('666')
+console.log(dog1.name)
+console.log(dog1.colors)
+// console.log(dog1.getColor())
+// console.log(dog1.age)
+dog1.getColor()
+dog1.getColor = function(){
+    console.log(777);
+}
+// console.log(dog1);
+// console.log(dog1.__proto__ == Dog.prototype);
+dog1.getColor()
+// dog2.name = '555'
+console.log(dog2.name)
+console.log(dog2.colors)
+console.log(dog2.age)
+dog2.getColor()
+// 4444
+// ['black', 'white', 'brown', '666']
+// 18
+// 555
+// ['black', 'white', 'brown', '666']
+// 18
+
+
+// 构造函数继承（只能继承私有属性)引用类型共享问题以及传参问题。但是由于方法必须定义在构造函数中，
+// 所以会导致每次创建子类实例都会创建一遍方法。
+function Animal(name){
+    this.name = name
+    this.colors = ['black', 'white']
+    this.info = {
+    name1: "yhd",
+    age: 19,
+    }
+}
+Animal.prototype.getColor = function() {
+    console.log('666');
+}
+function Dog(name){
+    Animal.call(this, name) // 在子类构造函数中调用父类构造函数
+}
+let ab = new Dog('zhangsan')
+console.log(ab.name);
+ab.info.name1 = 'xxx'
+console.log(ab.info);
+// console.log(ab.getColor());
+ab.colors.push('brown')
+console.log(ab.colors);
+let bb = new Dog('zhangsan')
+console.log(bb.colors);
+console.log(bb.info);
+ab.getName()
+ab.getName = function(){
+    console.log(777);
+}
+console.log(bb.info);
+ab.getName()
+// zhangsan
+// {name1: 'yhd', age: 19}
+
+
+// 组合继承
+// 组合继承结合了原型链和盗用构造函数，将两者的优点集中了起来。
+// 基本的思路是使用原型链继承原型上的属性和方法，而通过盗用构造函数继承实例属性。
+// 这样既可以把方法定义在原型上以实现重用，又可以让每个实例都有自己的属性。Animal.apply(this, [name, age])已经把私有属性实例化到每个子类
+// 缺点Animal实例化了两次，性能较差
+function Animal(name){
+    this.name = name
+    this.colors = ['black', 'white']
+}
+Animal.prototype.getName = function(){
+    console.log(666);
+}
+function Dog(name, age){
+    Animal.apply(this, [name, age])
+    this.age = age
+}
+Dog.prototype = new Animal()
+Dog.prototype.constructor = Dog
+let dog1 = new Dog()
+dog1.colors.push('brown')
+dog1.getName()
+dog1.getName = function(){
+    console.log(777);
+}
+dog1.getName()
+console.log(dog1) 
+let dog2 = new Dog('哈赤', 1)
+console.log(dog2) 
+dog2.getName()
+
+// 寄生式组合继承
+function Animal(name){
+    this.name = name
+    this.colors = ['black', 'white']
+}
+Animal.prototype.getName = function(){
+    return this.name
+}
+function Dog(name, age){
+    Animal.apply(this, [name, age])
+    this.age = age
+}
+Dog.prototype =  Object.create(Animal.prototype) // 唯一不同
+Dog.prototype.constructor = Dog
+let dog1 = new Dog()
+dog1.colors.push('brown')
+console.log(dog1) 
+let dog2 = new Dog('哈赤', 1)
+console.log(dog2)
+
+// class 实现继承
+class Animal {
+    constructor(name) {
+        this.name = name
+    } 
+    getName() {
+        return this.name
+    }
+}
+class Dog extends Animal {
+    constructor(name, age) {
+        super(name)
+        this.age = age
+        console.log(name);
+        console.log(age);
+    }
+}
+let dog1 = new Dog('zhangsan', 45)
+console.log(dog1);
+console.log(dog1.getName);
+console.log(Dog());
+
+// 防抖 不立刻执行 规定几秒后触发定时器
+// search搜索联想，用户在不断输入值时，用防抖来节约请求资源。
+// window触发resize的时候，不断的调整浏览器窗口大小会不断的触发这个事件，用防抖来让其只触发一次
+function debounce (func, wait){
+    var timeout
+    return function(){
+        var context = this
+        var args = arguments
+        clearTimeout(timeout)
+        timeout = setTimeout(() => {
+            func.apply(context,args)
+        }, wait);
+    }
+}
+function debounce(func, wait){
+    let timeout
+    return function(){
+        var context = this
+        clearTimeout(timeout)
+        timeout = setTimeout(()=>{
+            func.apply(context,arguments)
+        },wait)
+    }
+}
+function thorttle(func, wait){
+    let timeout = 0
+    return function(){
+        var context = this
+        var now = Data.now()
+        if(now-timeout>wait){
+            func.apply(context,arguments)
+            timeout = now
+        }
+        
+    }
+}
+// 节流 马上触发一次 开始计时 使用时间戳实现
+// 鼠标不断点击触发，mousedown(单位时间内只触发一次)
+// 监听滚动事件，比如是否滑到底部自动加载更多，用throttle来判断
+function thorttle(fun, delay){
+    var previous = 0;
+    return function(){
+        let that = this
+        let _args = arguments
+        let now = Date.now()
+        if(now-previous>delay){
+            func.call(that,_args)
+            previous = now
+        }
+    }
+}
+function thorttle(fun, delay){
+    var previous = 0
+    return function(){
+        let that = this
+        let now = Date.now()
+        if(now-previous>delay){
+            fun.call(that,arguments)
+            previous = now
+        }
+    }
+}
+//定时器版
+function thorttle(fun, delay){
+    var timeout;
+    return function(){
+        let that = this
+        let _args = arguments
+        if(!timeout){
+            timeout = setTimeout(()=>{
+                timeout = null
+                func.apply(that,_args)
+            }, delay)
+        }
+    }
+}
+function thorttle(fun, delay){
+    let timeout
+    return function(){
+        let that = this
+        if(!timeout){
+            timeout = setTimeout(()=>{
+                timeout = null
+                func.call(that,arguments)
+            },delay)
+        }
+    }
+}
+//数组扁平化
+// 1.利用flat（）
+let arr = [1, [2, [3]]]
+console.log(JSON.stringify(arr).replace(/\[|\]/g, ''));
+console.log(JSON.stringify(arr));
+console.log(JSON.stringify(arr).replace(/\[|\]/g, '').split(','));
+JSON.stringify(arr).replace(/\[|\]/g, '').split(',')
+console.log(JSON.stringify(arr).replace(/\[|\]/g, ''));
+const rest  = arr.flat(Infinity)
+// 利用正则
+const rest = JSON.stringify(arr).replace(/\[|\]/g, '').split(',')
+
+// 使用reduce
+const flatten = function(arr){
+    return arr.reduce((pre,cur)=>{
+       return pre.concat(Array.isArray(cur)? flatten(cur): cur) 
+    },[])
+}
+const flat = function(arr){
+    return arr.reduce((pre, cur)=>{
+        return pre.concat(Array.isArray(cur)? flat(cur) : cur)
+    },[])
+}
+flatten(arr)
+// 函数递归
+const res5 = []
+const fn = arr=>{
+for(let i=0;arr.length;i++){
+    Array.isArray(arr[i])?fn(arr[i]):res5.push(arr[i])
+}
+}
+// slice：截取功能
+// 截取数组为主，也可以截取字符串
+// 返回新的数组，包含截取的元素
+// 不改变原数组
+
+// splice()：数组增删查改
+// 只能对数组增删查改，字符串无效
+// 返回新的数组，内容是被删除的元素
+// 会改变原数组
+
+// split：字符串 => 数组
+// 字符串的方法，不是数组的方法。
+// 返回一个字符串数组。
+
+// join：数组 => 字符串
+
+// 数组去重
+const arr = [1, 1, '1', 17, true, true, false, false, 'true', 'a', {}, {}];
+// Array.from()
+// Array.from()方法就是将一个类数组对象或者可遍历对象转换成一个真正的数组
+const res1 = Array.from(new Set(arr))
+
+// 方法二：两层for循环+splice
+const unique2 = arr=>{
+    let len = arr.length
+    for(i=0;i<len;i++){
+        for(let j=i+1;j<len;j++){
+            if(arr[i]===arr[j]){
+                arr.splice(j,1)
+                len--
+                j--
+            }
+        }
+    }
+    return arr
+}
+// 方法三：利用indexOf
+const unique3 = arr=>{
+    const res = []
+    for(i=0;i<arr.length;i++){
+       if(res.indexOf(arr[i])){
+       }else{
+           res.push(arr[i])
+       }
+    }
+    return res
+}
+// 方法三：利用includes(数组中是否有某一项数值时)
+// includes和indexOf都是数组中是否有某一项数值includes返回true和false indexOf返回索引没找到返回-1
+const arr1 = [1, 1, '1', 17, true, true, false, false, 'true', 'a', {}, {}];
+const unique3 = arr=>{
+    const res = []
+    for(i=0;i<arr.length;i++){
+       if(res.includes(arr[i])){
+       }else{
+           res.push(arr[i])
+       }
+    }
+    return res
+}
+let res= unique3(arr1)
+console.log(res);
+// instanceof 主要的作用就是判断一个实例是否属于某种类型
+// 方法五：利用filter
+const unique4 = arr => {
+  return arr.filter((item, index) => {
+    return arr.indexOf(item) === index;
+  });
+}
+// forEach(): 针对每一个元素执行提供的函数 （没有return 直接修改）
+// map(): 创建一个新的数组，其中每一个元素由调用数组中的每一个元素执行提供的函数得来
+
+// .图片懒加载
+function lazyload(){
+   const imgs = document.getElementsByTagName('img')
+   const len = imgs.length
+   if(len === 0) return
+   // 视口的高度
+   const clientHeight = document.documentElement.clientHeight
+   // 滚动条高度
+   const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+   for(let i=0;i<len;i++){
+       let offsetTop = imgs[i].offsetTop;
+       if(offsetTop<clientHeight+scrollTop){
+           const src = imgs[i].dataset.src
+           imgs[i].src = src
+       }
+   }
+}
+// 可以使用节流优化一下
+window.addEventListener('scroll', _.thorttle(()=>{
+    lazyload()
+},500))
+
+
+// 底部滚动加载
+window.addEventListener('scroll', function(){
+    const clientHeight = document.documentElement.clientHeight
+    const scrollTop = document.documentElement.scrollTop
+    const scrollHeight = document.documentElement.scrollHeight
+    if(clientHeight+scrollTop>=scrollHeight){
+
+    }
+},false)
+
+//
+setTimeout(function () {
+  console.log("1");
+}, 0);
+async function async1() {
+  console.log("2");
+  const data = await async2();
+  console.log("3");
+  return data;
+}
+async function async2() {
+  return new Promise((resolve) => {
+    console.log("4");
+    resolve("async2的结果");
+  }).then((data) => {
+    console.log("5");
+    return data;
+  });
+}
+async1().then((data) => {
+  console.log("6");
+  console.log(data);
+});
+new Promise(function (resolve) {
+  console.log("7");
+  //   resolve()
+}).then(function () {
+  console.log("8");
+});
+// 2
+// 4
+// 7
+// 5
+// 3
+// 6
+// async2的结果
+// 1
+
+// 手写 promise.all 和 racE
+const all = function (promiseArr) {
+    let result  = []
+    let count = 0
+    return new Mypromise((resolve, reject) => {
+        for (let i = 0; i < promiseArr.length; i++) {
+            Promise.resolve(promiseArr[i]).then((res)=>{
+                result[i] = res
+                count++
+                if(count === promiseArr.length){
+                    resolve(result)
+                }
+            },
+            (err)=>{
+                reject(err)
+            }
+            )
+        }
+    })
+}
+const p1 = Promise.resolve(1)
+const p2 = new Promise((resolve)=>{
+    setTimeout(() => {
+        resolve(2)
+    }, 1000);
+})
+const p3 = new Promise((resolve) => {
+  setTimeout(() => resolve(3), 3000)
+})
+const all = function(promiseArr){
+    let result = []
+    let count = 0
+    return new Promise((resolve,reject)=>{
+        for (let i = 0; i < promiseArr.length; i++) {
+            Promise.resolve(promiseArr[i]).then((res)=>{
+                result[i] = res
+                count++
+                if(count === promiseArr.length){
+                    resolve(result)
+                }
+            },
+            (err)=>{
+                reject(err)
+            }
+            )
+        }
+    })
+}
+all([ p1, p2, p3 ])
+const rece = function (promiseArr) {
+    return new Mypromise((resolve, reject) => {
+        for (let i = 0; i < promiseArr.length; i++) {
+            Promise.resolve(promiseArr[i]).then((res)=>{
+                resolve(res)
+            },
+            (err)=>{
+                reject(err)
+            }
+            )
+        }
+    })
+}
+// 闭包可以用于在对象中创建私有变量
+var aaa = (function () {
+  var a = 1;
+  function bbb() {
+    a++;
+    console.log(a);
+  }
+  function ccc() {
+    a++;
+    console.log(a);
+  }
+  return {
+    b: bbb, //json结构
+    c: ccc,
+  };
+})();
+console.log(aaa.a); //undefined
+aaa.b(); //2
+aaa.c(); //3
+
+function createCounter() {
+  let counter = 0
+  const myFunction = function() {
+    counter = counter + 1
+    return counter
+  }
+  return myFunction
+}
+const increment = createCounter()
+const c1 = increment()
+const c2 = increment()
+const c3 = increment()
+console.log('example increment', c1, c2, c3)
+
+// new
+function mynew(fn,...args){
+    if(typeof fn !== 'function'){
+        throw new Error('')
+    }
+    // 创建一个继承 fn 原型的对象
+    const newobj = Object.create(fn.prototype)
+    // 将 fn 的 this 绑定给新对象，并继承其属性，然后获取返回结果
+    const result = fn.call(newobj, args)
+    // 根据 result 对象的类型决定返回结果
+    return result && (typeof fn == "function" || typeof fn == "Object")? result : newobj
+}
+
+//call
+Function.prototype.mycall(ctx){
+    ctx = ctx || window
+    let fn = Symbol()
+    ctx[fn] = this//这时的this是acb.call里的abc（利用隐式绑定）
+    // 相当与父类abc在第一个参数ctx里实例化了一次 父类在cyx里 所以this当然指向第一个参数ctx
+    let result = ctx[fn](...arguments)
+    delete ctx[fn]
+    return result
+}
+// class(类)
+// 例
+class Bullshit {
+    constructor (text, color) {//我们要让每个都有自己的特有属性
+        this.text = text
+        this.color = color
+    }
+    show(){//方法
+        p.innerHtml = this.text
+        p.style.color = this.color
+    }
+    
+}
+const bullshit = new Bullshit('xxx', "#00a1d6")
+
+// 怎样理解 Vue 的单向数据流？
+// 所有的 prop 都使得其父子 prop 之间形成了一个单向下行绑定：父级 prop 的更新会向下流动到子组件中，但是反过来则不行。
+// 这样会防止从子组件意外改变父级组件的状态，从而导致你的应用的数据流向难以理解。
+// 每次父组件刷新是子组件得到的props都是最新的，所以我们不能修改子组件props的值，如果修改vue会报错，只能$emit派发，让父组件去修改
+// 这个 prop 用来传递一个初始值；这个子组件接下来希望将其作为一个本地的 prop 数据来使用
+// 这个 prop 以一种原始的值传入且需要进行转换
+
+
+// 怎么理解nextTick
+// nextTick执行延迟回调，就可以拿到更新后的 DOM 相关信息
+// 通过js的EventLoop EventLoop主线程任务执行完再处理队列里面的微任务，微任务队列 宏任务队列，队列是一个逻辑结构，保持先进先出的原则
+// nextTick 就是创建一个异步任务，那么它自然要等到同步任务执行完成后才执行
+// 就是利用promise来创建一个异步任务 也可以用定时器 因为定时器设置0秒也不是马上执行 而是再下一次红任务执行，就会等待主线程dom渲染完毕
+// 在.then执行队列里的回调函数 利用for循环依次执行 保持先进先出的原则
+
+
+// 怎么理解keep-alive
+// 1，用途就是缓存组件 结合项目说一下
+// 2，说一下用法 include和exclude，传数组情况居多 也可传正则匹配 也可以在路由mate里设置keep-alive：true 包裹<router-view>的时候判断mate
+// 4，先说一下vue的组件是怎么渲染的 render函数会将组件转换为vnode 
+// patch：此函数在初次渲染时会直接渲染根据拿到的VNode直接渲染成真实DOM，
+// 第二次渲染开始就会拿VNode会跟旧VNode对比，打补丁（diff算法对比发生在此阶段），然后渲染成真实DOM
+// 而keep-alive就是利用hashMap + 双向链表 因为需要频繁引用缓存组件的vnode 或者删除缓存组件vnode 并将的前一个节点指向下一个节点，所以使用双链接最合适
+// keep-alive 组件的缓存也是基于 VNode 节点的而不是直接存储 DOM 结构。
+// 它将满足条件（ include 与 exclude ）的组件在 cache 对象中缓存起来，
+// 在需要重新渲染的时候再将 vnode 节点从 cache 对象中取出并渲染。
+
+
+//说一下重绘 重排
+// 先说一下浏览器生成页面生成的过程：
+// 1.HTML 被 HTML 解析器解析成 DOM 树；
+// 2.CSS  被 CSS 解析器解析成 CSSOM 树；
+// 3.结合 DOM 树和 CSSOM 树，生成一棵渲染树(Render Tree)，这一过程称为 Attachment；
+// 4.生成布局(flow)，浏览器在屏幕上“画”出渲染树中的所有节点；
+// 5.将布局绘制(paint)在屏幕上，显示出整个页面。
+
+// 重绘：某些元素的外观被改变，例如：元素的填充颜色
+// 重排：重新生成布局，重新排列元素。
+
+// 就如上面的概念一样，单单改变元素的外观，肯定不会引起网页重新生成布局，但当浏览器完成重排之后，
+// 将会重新绘制受到此次重排影响的部分。比如改变元素高度，这个元素乃至周边dom都需要重新绘制。
+
+// 减少重排优化
+// 1，减少重排范围 
+// 局部布局的形式组织html结构，就算重排影响的范围也很小
+// 不要使用 table 布局，可能很小的一个小改动会造成整个 table 的重新布局。
+// 样式尽可能放置在底层级的dom节点上 例如你想修改div里面的p样式 就不要把class加在div上，会导致整个div重排
+// 2，分离读写操作（防止多次触发重复重排）
+// DOM 的多个读操作（或多个写操作），应该放在一起。不要两个读操作之间，加入一个写操作
+// 3.使用绝对定位和fixed固定定位脱离文档流
+// 形成单独渲染 重排开销小
+// 4优化动画开启gpu加速使用 transform：translate
+
+// 最后提一下 查看页面渲染时间 在performance里可以看到我们页面渲染的重排重绘时间占比
+
+
+
+// diff算法的过程
+// 判断Vnode和oldVnode是否指向同一个对象，如果是，那么直接return
+// 如果他们都有文本节点并且不相等，那么将真实dom的文本节点设置为Vnode的文本节点。
+// 如果oldVnode有子节点而Vnode没有，则删除真实dom的子节点
+// 如果oldVnode没有子节点而Vnode有，则将Vnode的子节点真实化之后添加到真实dom
+// 如果两者都有子节点，则执行updateChildren函数比较子节点，这一步很重要
+
+// updateChildren函数vnode和oldvnode的子节点会头尾都会有两个指针
+// 利用双指针进行比对往中间对比开始指针与末尾指针相交停止循环 
+// 如果有key会生成hash表做匹配（可复用）复杂度O（1）需要额外的内存空间
+// 如果没有key就会生成新节点进行插入操作（会导致后面的节点无法复用）复杂度 O（n）
+// 如果Vnode指针已经相交 就把el没相交的元素删除 反之老的vnode循环结束新的还有就在相交处插入
+
+
+
+// diff算法vue2和vue3的区别 
+// 1.(静态标记)vue2是全量vnode进行diff，而vue3是有静态标记，排除了循环静态的vnode
+// 2.(静态提升)会把不参与更新的元素保存起来，只创建一次
+// 3.(基于最长递增子序列进行移动)对比两个子节点方法进行了优化
+// 在 Vue2 里 updateChildren 会进行
+// 头和头比
+// 尾和尾比
+// 头和尾比
+// 尾和头比
+// 都没有命中的对比
+
+// 在 Vue3 里 patchKeyedChildren 为
+// 头和头比
+// 尾和尾比
+// 基于最长递增子序列进行移动/添加/删除
+
+// 看个例子，比如
+// 老的 children：[ a, b, c, d, e, f, g ]
+// 新的 children：[ a, b, f, c, d, e, h, g ]
+// 先进行头和头比，发现不同就结束循环，得到 [ a, b ]
+// 再进行尾和尾比，发现不同就结束循环，得到 [ g ]
+// 再保存没有比较过的节点 [ f, c, d, e, h ]，并通过 newIndexToOldIndexMap 拿到在数组里对应的下标，生成数组 [ 5, 2, 3, 4, -1 ]，-1 是老数组里没有的就说明是新增
+// 然后再拿取出数组里的最长递增子序列，也就是 [ 2, 3, 4 ] 对应的节点 [ c, d, e ]
+// 然后只需要把其他剩余的节点，基于 [ c, d, e ] 的位置进行移动/新增/删除就可以了
+
+
+
+// 父子组件生命周期执行顺序
+// 加载渲染过程
+// 父beforeCreate->父created->父beforeMount->子beforeCreate->子created->子beforeMount->子mounted->父mounted
+// 复制代码更新过程
+// 父beforeUpdate->子beforeUpdate->子updated->父updated
+// 复制代码销毁过程
+// 父beforeDestroy->子beforeDestroy->子destroyed->父destroyed
+
+// style-loader
+// 将 CSS 插入到 DOM，一般与 css-loader(加载 CSS 文件并解析 import 的 CSS 文件，最终返回 CSS 代码) 一起使用
+
+use: [
+          'style-loader',
+          'css-loader',
+          'less-loader',
+        ]
+//         less-loader
+// Less是CSS预处理语言，扩展了CSS语言，增加了变量、Mixin、函数等特性，Less-loader的作用就是将less代码转译为浏览器可以识别的CSS代码。
+// css-loader
+// Css-loader的作用主要是解析css文件中的@import和url语句，处理css-modules，并将结果作为一个js模块返回
+// 假如我们有a.css、b.css、c.css：
+// 可以理解为css-loader将a.css、b.css和c.css的样式内容以字符串的形式拼接在一起，并将其作为js模块的导出内容。
+// Less是CSS预处理语言，扩展了CSS语言，增加了变量、Mixin、函数等特性，Less-loader的作用就是将less代码转译为浏览器可以识别的CSS代码。
+
+webpack按需加载
+webpack中output的设置并不决定是否拆分代码
+拆分代码的决定因素在import语法上
+webpack在扫描到代码中有import语法的时候，才决定执行拆分代码
+按需加载找的文件是/1.js
+但我们打包的结果在dist目录下，自然不可能在根目录下找到
+step4：配置Public Path基础路径
+该配置能帮助你为项目中的所有资源指定一个基础路径。它被称为公共路径(publicPath)。
+修改webpack.config.js
+module.exports = {
+  entry:'./a.js',
+  output:{
+    filename:'[name].js',
+    chunkFilename:'[name].js',// 设置按需加载后的chunk名字
+    publicPath:'dist/' // 设置基础路径
+  }
+}
+let age
+console.log(age);
+hash
+hash是跟整个项目的构建相关，只要项目里有文件更改，整个项目构建的hash值都会更改，并且全部文件都共用相同的hash值
+// contenthash
+在chunkhash的例子，我们可以看到由于index.css被index.js引用了，所以共用相同的chunkhash值。但是这样子有个问题，
+如果index.js更改了代码，css文件就算内容没有任何改变，由于是该模块发生了改变，导致css文件会重复构建。
+这个时候，我们可以使用extra-text-webpack-plugin里的contenthash值，保证即使css文件所处的模块里就算其他文件内容改变，
+只要css文件内容不变，那么不会重复构建。
+
+// 前端浏览器缓存知识梳理
+hash一般是结合CDN缓存来使用，通过webpack构建之后，生成对应文件名自动带上对应的MD5值。
+如果文件内容改变的话，那么对应文件哈希值也会改变，对应的HTML引用的URL地址也会改变，
+触发CDN服务器从源服务器上拉取对应数据，进而更新本地缓存。但是在实际使用的时候，这几种hash计算还是有一定区别。
+
+let numArray = [1, 2, 3, 2, 3]
+console.log(Array.from(new Set(numArray))) 
+let numArray = [1, 2, 3, 2, 3]
+console.log(new Set(numArray)) 
+// Array.from()方法就是将一个类数组对象或者可遍历对象转换成一个真正的数组
+
+for in 和 for of 的区别
+简单来说就是它们两者都可以用于遍历，不过for in遍历的是数组的索引（index），而for of遍历的是数组元素值（value）
+for in更适合遍历对象，当然也可以遍历数组，但是会存在一些问题
+index索引为字符串型数字，不能直接进行几何运算
+var arr = [1,2,3]
+for (let index in arr) {
+  let res = index + 1
+  console.log(res)
+}
+//01 11 21
+使用for in会遍历数组所有的可枚举属性，包括原型，如果不想遍历原型方法和属性的话，
+可以在循环内部判断一下，
+使用hasOwnProperty()方法可以判断某属性是不是该对象的实例属性
+var arr = [1,2,3]
+Array.prototype.a = 123
+for (let index in arr) {
+  let res = arr[index]
+  console.log(res)
+}
+//1 2 3 123
+for(let index in arr) {
+    if(arr.hasOwnProperty(index)){
+        let res = arr[index]
+  		console.log(res)
+    }
+}
+// 1 2 3
+
+for of适用遍历数/数组对象/字符串/map/set等拥有迭代器对象（iterator）的集合，但是不能遍历对象，
+因为没有迭代器对象，但如果想遍历对象的属性，
+你可以用for in循环（这也是它的本职工作）或用内建的Object.keys()方法
+var myObject={
+　　a:1,
+　　b:2,
+　　c:3
+}
+for (var key of myObject) {
+  console.log(key);
+}
+//VM84:6 Uncaught TypeError: myObject is not iterable 报错
+var myObject={
+　　a:1,
+　　b:2,
+　　c:3
+}
+for (var key of Object.keys(myObject)) {
+  console.log(key + ": " + myObject[key]);
+}
+//a:1 b:2 c:3
+
+// 数据类型的4种判断方法
+typeof（基本数据类型准确 null会是obj []和{}都是obj）
+
+console.log(typeof ""); 
+console.log(typeof 1); 
+console.log(typeof true); 
+console.log(typeof undefined); 
+console.log(typeof null); // object---有点儿特殊，见下
+console.log(typeof Symbol('id'))
+不同的数据类型在底层都是通过二进制表示的，二进制前三位为000则会被判断为object类型，而null底层的二进制全都是0，那前三位肯定也是000，所以被判断为object;（js的bug）
+
+instanceof（）不难看出，instanceof可以用于引用类型的检测，但对于基本类型是不生效的;另外，不能用于检测null和undefined， 会抛错。
+// 返回的是一个布尔值
+console.log('1' instanceof String) 
+console.log(1 instanceof Number) 
+console.log(true instanceof Boolean) 
+// false
+// false
+//  false
+console.log([] instanceof Array) 
+console.log(function () {} instanceof Function) 
+console.log({} instanceof Object) 
+// true
+function new_instance_of(leftVaule, rightVaule) { 
+    let rightProto = rightVaule.prototype; // 取右表达式的 prototype 值
+    leftVaule = leftVaule.__proto__; // 取左表达式的__proto__值
+    while (true) {
+    	if (leftVaule === null) {
+            return false;	
+        }
+        if (leftVaule === rightProto) {
+            return true;	
+        } 
+        leftVaule = leftVaule.__proto__ 
+    }
+}
+function instanceof(leftVaule,rightVaule){
+ let rightProto = rightVaule.prototype
+leftVaule = leftVaule.__proto__
+    while(true){
+        if(leftVaule === null){
+            return false
+        }
+        if(leftVaule === rightProto){
+            return true
+        }
+        leftVaule = leftVaule.__proto__
+    }
+}
+constructor 撇去null、undefined、Symbol、BigInt，constructor能用于检测js的基本类型和引用类型，但当对象的原型更改之后，constructor便失效了。
+console.log('1'.constructor === String)
+console.log((1).constructor === Number)
+console.log(true.constructor === Boolean) 
+console.log([].constructor === Array)
+console.log(function () {}.constructor === Function)
+console.log({}.constructor === Object)
+
+Object.prototype.toString.call()
+Object.prototype.toString.call('5') // [object String]
+Object.prototype.toString.call(5) // [object Number]
+Object.prototype.toString.call([5]) // [object Array]
+Object.prototype.toString.call(true) // [object Boolean]
+Object.prototype.toString.call('1')
+
+
+//浏览器缓存
+/*  */
+缓存方案
+expires
+是HTTP1.0控制网页缓存的字段，值为一个时间戳，准确来讲是格林尼治时间，服务器返回该请求结果缓存的到期时间，
+意思是，再次发送请求时，如果未超过过期时间，直接使用该缓存，如果过期了则重新请求。
+Cache-Control
+是HTTP1.1中控制网页缓存的字段，当Cache-Control都存在时，Cache-Control优先级更高，主要取值为：
+public：资源客户端和服务器都可以缓存。
+privite：资源只有客户端可以缓存。
+no-cache：客户端缓存资源，但是是否缓存需要经过协商缓存来验证。
+no-store：不使用缓存。
+max-age：缓存保质期。
+etag和last-Modified类似 也是用于对比缓存文件是否改变
+目前的项目大多使用这种缓存方案的：
+If-Modified-Since则是客户端再次发起该请求时，
+携带上次请求返回的Last-Modified值，
+通过此字段值告诉服务器该资源上次请求返回的最后被修改时间。
+服务器收到该请求，发现请求头含有If-Modified-Since字段，
+则会根据If-Modified-Since的字段值与该资源在服务器的最后被修改时间做对比，
+若服务器的资源最后被修改时间大于If-Modified-Since的字段值，则重新返回资源，
+状态码为200；否则则返回304，代表资源无更新，可继续使用缓存文件。
+HTML: 协商缓存；
+css、js、图片：强缓存，文件名带上hash。
+强缓存与协商缓存的区别
+1. 强缓存不发请求到服务器，所以有时候资源更新了浏览器还不知道，但是协商缓存会发请求到服务器，所以资源是否更新，服务器肯定知道。
+2. 大部分web服务器都默认开启协商缓存。
+
+
+function func(num) {
+    let count = 0
+  this.count++
+  console.log(this.count);
+}
+
+func.count = 0
+func(1)
+
+// this的指向问题(有三种绑定 1.默认绑定2.隐式绑定3.显示绑定)
+// new
+function mynew(fn,...args){
+    if(typeof fn !== 'function'){
+        throw new Error('')
+    }
+    // 创建一个继承 fn 原型的对象
+    const newobj = Object.create(fn.prototype)
+    // 将 fn 的 this 绑定给新对象，并继承其属性，然后获取返回结果
+    const result = fn.call(newobj, args)
+    // 根据 result 对象的类型决定返回结果
+    return result && (typeof fn == "function" || typeof fn == "Object")? result : newobj
+}
+
+//call
+// call就是利用this的隐式绑定让调用对向在第一个参数里实例化，this并指向第一个参数 执行
+var age = 10
+var obj = {
+  age: 20,
+}
+function foo(a, b) {
+    console.log(this);
+  console.dir(this.age + a + b);
+}
+Function.prototype.mycall(ctx,...args){
+    ctx = ctx || window
+    let fn = Symbol()
+    ctx[fn] = this
+    let result = ctx[fn](...args)
+    delete ctx[fn]
+    console.log(this);
+    return result
+    
+}
+foo(3, 4) // => 17
+foo.mycall(obj, 3, 4) 
+Object.prototype.toString.mycall('1')
+默认绑定再普通函数里是指向window
+严格模式是undefined
+但往往会有以下场景，把对象中的函数赋值成一个变量了。 这样其实又变成普通函数了，所以使用普通函数的规则（默认绑定）。
+var studentDoSth = student.doSth;
+studentDoSth(); // 'window'
+DOM事件函数：一般指向绑定事件的DOM元素，但有些情况绑定到全局对象（比如IE6~IE8的attachEvent）。
+var name = 'window';
+var doSth = function(){
+    console.log(this.name);
+}
+var student = {
+    name: '若川',
+    doSth: doSth,
+    other: {
+        name: 'other',
+        doSth: doSth,
+    }
+}
+student.doSth(); // '若川'
+student.other.doSth(); // 'other'
+// 用call类比则为：
+student.doSth.call(student);//若川
+// 用call类比则为：
+student.other.doSth.call(student.other);// other
+
+CDN缓存（内容分发网络）
+源服务器会先把静态内容备份给CDN CDN就相当于让用户和源服务器隔了一道墙 用户不再直接访问源服务器 而是通过cdn来沟通这样就不用担心DDos攻击了
+
+
+浏览器的渲染流程
+浏览器向服务器请求资源 ，将html转换成DOM 浏览器在构建DOM的时候遇到link标签（可以部分解析）
+然后向服务器发送请求得到CSS文件 解析css 变成cssom （不可以部分解析）因为盒子有嵌套关系
+dom和cssom都是独立的对象模型
+cssom和dom结合成渲染树 渲染树上只有浏览器可见的内容 mate link displty:none是不在的
+有了渲染树就要进行布局
+布局以后就可以安排页面绘制了（把渲染树以像素的形式绘制再页面上
+
+请求css文件的同时可以解析html文件
+然后遇到scrtpi标签就去请求js然后js请求完马上执行 那js的运行会阻塞css的请求或解析  
+为什么js执行会阻塞css和html的解析
+因为js既可以改变css样式也可以操作dom （所以浏览器渲染线和js执行是互斥的）可能网页有一些内容会出现了又消失 必须等到cssom构建完成后在执行js文件
+
+// vue双向绑定原理
+将数据通过Observer劫持 利用objeck.keys将对象变数组形式再用forEach循环
+利用Object.defineProperty()方法监听对象属性 判断对象里面还是对象就再调用Observer函数 
+使得数据每一项都进行劫持
+我们再get()方法里进行收集依赖
+收集依赖我们定义dep构造函数，需要有一个数组来存放我们订阅者的信息，里面有ADD（添加订阅者到数组里）和ontifi（遍历订阅者数组，调用订阅者自身的updata方法进行数据更新）方法 
+还需要watcher构造函数，订阅者里有三个参数，一个是vue实例，vue实例对应的属性，第三个函数是一个回调函数，创建updata函数，里面调用回调函数，再模板解析的时候创建watcher实例
+我们再get（）方法里将将watcher实例装到dep数组里
+（怎么将watcher实例装到对象dep数组里）
+在watcher实例里定义一个临时的属性dep.temp把实例化的watcher赋值给temp，根据作用域就可以在dep里访问watcher实例了
+接下来就是把watcher装到dep数组里，在watcher出发对应的变量在get（）方法里打出dep.temp他就是一个watcher实例，（利用了this指向）再把dep.temp通过add加入数组里
+修改数据时再执行对应数据的dep.ontifi，通知watcher跟新数据，watcher执行updata函数，里面调用回调函数在模板编译的时候修改数据
+compile模板编译会形成新的dom和老的dom用diff算法进行比较跟新模板
+
+// map 方法 
+function map(arr,callback) {
+ //首先检查一下参数
+ let flag = !Array.isArray(arr) || !arr.length || typeof callback !=='function'
+ if(flag){
+   return  []
+ }else{
+   //每次调用我们都会返回一个新数组
+   let newArr = []
+   for(let i = 0; i<arr.length;i++){
+    newArr[i] = callback(arr[i], i, arr)
+   }
+   return newArr
+ }
+}
+
+//移动端1px像素问题(DPR DPR DPR DPR DPR
+dpr=window.devicePixelRatio，也就是设备的物理像素与逻辑像素的比值
+dpr=2时，表示1个CSS像素由4个物理像素点组成。
+一般设计稿是按照750来设计的，它上面的1px是以750来参照的，而我们写css样式是以设备375为参照的，所以我们应该写的0.5px就好了啊！
+// 解决方式
+伪元素 + transform 缩放
+.box2::after{
+            content:'';
+            position: absolute;
+            left:0;top:0;width: 100%;
+            height: 1px; 
+            background-color: #000;
+            transform: scaleY(0.5);
+        }
+    方法二 新项目最好使用的是设置viewport的scale（私giao）值
+
+
+// webpack构建流程
+在配置文件中合并配置参数
+实例化compiler,加载plugin
+找到entry出口，对每个module调用对应的loader去翻译文件内容，再找到module依赖的module，递归地进行编译处理
+将编译后的module组成chunk，将chunk转换成文件 根据配置确定输出的路径和文件名，把文件内容写入到文件系统
+
+//null和undefined的区别
+null一个值是声明null
+undefined是没有声明或者没有值
+一般把一个值设置为null可以释放他的内存
+
+盒子水平垂直居中
+一、绝对定位和负magin值
+.children-box {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: yellow;
+    left: 50%;
+    top: 50%;
+    margin-left: -50px;
+    margin-top: -50px; 
+}
+二、绝对定位 + transform
+.children-box {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: yellow;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); 
+}
+绝对定位 + left/right/bottom/top + margin
+.children-box {
+    position: absolute;
+    display: inline;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0px;
+    background: yellow;
+    margin: auto;
+    height: 100px;
+    width: 100px;
+}
+// flex布局
+.box {
+    width: 200px;
+    height: 200px;
+    border: 1px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+// table-cell
+.box {
+    width: 200px;
+    height: 200px;
+    border: 1px solid red;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+.children-box {
+   background: yellow;
+   display: inline-block;
+}
+
+//
+第一优先级：!important会覆盖页面内任何位置的元素样式
+1.内联样式，如style="color: green"，权值为1000
+2.ID选择器，如#app，权值为0100
+3.类、伪类、属性选择器，如.foo, :first-child, div[class="foo"]，权值为0010
+4.标签、伪元素选择器，如div::first-line，权值为0001
+5.通配符、子类选择器、兄弟选择器，如*, >, +，权值为0000
+6.继承的样式没有权值
+
+
+XSS（携带脚本）
+全称Cross Site Scripting，名为跨站脚本攻击，黑客将恶意脚本代码植入到页面中从而实现盗取用户信息等操作。
+例如img标签、script标签等，这篇博客必然会存入数据库中，当其他用户访问该文章时恶意脚本就会执行，然后进行恶意操作。
+既然是不合理的输入，那最先想到的就是过滤,对可以输入的地方进行过滤操作，比如<script>、<img>、<a>等标签进行过滤
+编码：像一些常见的符号，如<>在输入的时候要对其进行转换编码输出
+对于cooki需要设置http-only，防止cookie被盗。
+
+CSRF（伪造）
+全称cross-site request forgery，名为跨站请求伪造，顾名思义就是黑客伪装成用户身份来执行一些非用户自愿的恶意以及非法操作
+1、验证码
+2、tokenId令牌
+3、判断请求的Referer是否正确
+
+// Web Worker 
+JavaScript 语言采用的是单线程模型，也就是说，所有任务只能在一个线程上完成，一次只能做一件事。前面的任务没做完，后面的任务只能等着。随着电脑计算能力的增强，尤其是多核 CPU 的出现，单线程带来很大的不便，无法充分发挥计算机的计算能力。
+Web Worker 的作用，就是为 JavaScript 创造多线程环境，允许主线程创建 Worker 线程，将一些任务分配给后者运行。在主线程运行的同时，Worker 线程在后台运行，两者互不干扰。等到 Worker 线程完成计算任务，再把结果返回给主线程。这样的好处是，一些计算密集型或高延迟的任务，被 Worker 线程负担了，主线程（通常负责 UI 交互）就会很流畅，不会被阻塞或拖慢。
+
+Web Worker让JS有了多线程的能力，可以将复杂耗时的操作都交付给Worker线程处理。
+WebSocket让web端与服务端维持一个有效的长连接，实现服务端主动推送数据。
+使用web worker
+引入worker-loader npm包
+npm install worker-loader
+2.配置loader
+{
+   test: /\.worker\.(c|m)?js$/i,
+   use: [{
+      loader: "worker-loader",
+   }]
+}
+再声明index.d.ts文件
+declare module "worker-loader!*" {
+  // You need to change `Worker`, if you specified a different value for the `workerType` option
+  class WebpackWorker extends Worker {
+    constructor();
+  }
+
+  // Uncomment this if you set the `esModule` option to `false`
+  // export = WebpackWorker;
+  export default WebpackWorker;
+}
+4.创建*.worker.ts文件
+const ctx: Worker = self as any;
+
+// Post data to parent thread
+ctx.postMessage({ foo: "foo" });
+
+// Respond to message from parent thread
+ctx.addEventListener("message", (event) => console.log(event));
+5.主文件引用worker
+import Worker from "worker-loader!./Worker";
+
+const worker = new Worker();
+
+worker.postMessage({ msg: 1 });
+worker.onmessage = (event) => {};
+
+worker.addEventListener("message", (event) => {}
+
+场景
+心跳检测
+前端会定期检测后端服务的可用情况,一般情况下处理都是通过开启定时轮询发送ajax检测。这就会占用主线程资源
+所以可以放在Worker中进行处理.出现异常再通知主线程渲染UI给予提示等操作
+二，在不阻塞主线程的情况下，可以通过worker请求接口数据然后归并到当前的state。
+
+优点与缺点
+优点
+独立于主线程,不造成阻塞
+非常适合处理高频、高延时的任务
+可以内部做队列机制,做为延时任务的缓冲层
+
+缺点
+无法操作DOM,无法获取window, document, parent等对象
+遵守同源限制, Worker线程的脚本文件，必须于主线程同源。并且加载脚本文件是阻塞的
+不当的操作或者疏忽容易引起性能问题
+
+
+// 运行 npm run xxx 的时候发生了什么？
+例如启动vue项目 npm run serve的时候，实际上就是执行了vue-cli-service serve 这条命令。
+因为 直接执行vue-cli-service serve，会报错，因为操作系统中没有存在vue-cli-service这一条指令
+
+面试官：那既然vue-cli-service这条指令不存在操作系统中，为什么执行npm run serve的时候，
+也就是相当于执行了vue-cli-service serve ，为什么这样它就能成功，而且不报指令不存在的错误呢？
+
+我们在安装依赖的时候，是通过npm i xxx 来执行的，例如 npm i @vue/cli-service，
+npm 在安装这个依赖的时候，就会node_modules/.bin/ 目录中创建 好vue-cli-service 为名的几个可执行文件了
+
+也就是说，npm i 的时候，npm 就帮我们把这种软连接配置好了，其实这种软连接相当于一种映射，执行npm run xxx 的时候，
+就会到 node_modules/bin中找对应的映射文件，然后再找到相应的js文件来执行
+
+// 乾坤·微前端样式隔离
+乾坤，作为一款微前端领域的知名框架，其建立在single-spa基础上。相较于single-spa，乾坤做了两件重要的事情，
+其一是加载资源，第二是进行资源隔离。而资源隔离又分为Js资源隔离和css资源隔离，
+css隔离
+很简单在加载a应用的时候把B应用的样式移除（子应用之间的隔离）
+主应用和子应用的样式隔离
+1.约定项目的前缀
+2css-modules的方式 打包时生成不冲突的选择器名
+3，shadow dom 真正意义上的隔离（影子dom 直接在该dom划界限 把该dom的样式带入 外界无法访问）
+
+js的隔离
+比如我先加载A应用，我在a应用给window加了属性a，再切换到B应用 B应用就被污染了
+// 实现隔离需要用到沙箱 互不影响 当切换时可以选择丢弃属性或加入属性。
+js沙箱的实现（proxy可以实现，但有兼容性问题）
+
+快照沙箱
+比如拍照 一年前拍一张 切换子应用现在拍一下张 （把区别保存起来） 再回到一年前 还原再加上区别
+
+现在是在一家税务公司做saas平台系统 app也有做过一些 主要用的技术vue webpack 微前端，负责项目的迭代和优化。平时会在github上拉取一些开源项目学习，看一下书籍
+
+// 浏览器请求头
+Accept: */*
+Accept: text/html  浏览器可以接受服务器回发的类型为 text/html。
+Accept: */*   代表浏览器可以处理所有类型,(一般浏览器发给服务器都是发这个)。
+
+Accept-Encoding: gzip, deflate, br
+浏览器申明自己接收的编码方法，通常指定压缩方法，是否支持压缩，支持什么压缩方法（gzip，deflate），（注意：这不是只字符编码）。
+
+Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
+浏览器申明自己接收的语言
+
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDIxMDMxNTEwMTQxODE0NTg1Nzg2NjUiLCJsb2dpblR5cGUiOiJ3ZWIiLCJleHAiOjE2NTI4ODQwMjYsInZlcnNpb24iOjF9.DxisGM4Zs6B-VPWpU60cMlPP0KUpU6AM90e0fWRv1Jo
+Connection: keep-alive
+
+Cookie: TaxSaaS-1.6.2token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDIxMDMxNTEwMTQxODE0NTg1Nzg2NjUiLCJsb2dpblR5cGUiOiJ3ZWIiLCJleHAiOjE2NTI4ODQwMjYsInZlcnNpb24iOjF9.DxisGM4Zs6B-VPWpU60cMlPP0KUpU6AM90e0fWRv1Jo; TaxSaaS-1.6.2uuid=202103151014181458578665
+entVersion
+
+Host: localhost:6050
+请求报头域主要用于指定被请求资源的Internet主机和端口号，它通常从HTTP URL中提取出来的。
+
+pageName: %E7%B3%BB%E7%BB%9F%E9%A6%96%E9%A1%B5
+Referer: http://localhost:6050/home
+当浏览器向web服务器发送请求的时候，一般会带上Referer，告诉服务器我是从哪个页面链接过来的，
+
+router: /home
+sec-ch-ua: " Not A;Brand";v="99", "Chromium";v="101", "Microsoft Edge";v="101"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+Sec-Fetch-Dest: empty
+Sec-Fetch-Mode: cors
+Sec-Fetch-Site: same-origin
+sysCode: HMSYS02
+
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36 Edg/101.0.1210.39
+告诉HTTP服务器， 客户端使用的操作系统和浏览器的名称和版本。
+
+Cache-ControlCache-Control:private 默认为private  响应只能够作为私有的缓存，不能再用户间共享
+Cache-Control:public 响应会被缓存，并且在多用户间共享。正常情况, 如果要求HTTP认证,响应会自动设置为 private.
+Cache-Control:must-revalidate  响应在特定条件下会被重用，以满足接下来的请求，但是它必须到服务器端去验证它是不是仍然是最新的。
+Cache-Control:no-cache  响应不会被缓存,而是实时向服务器端请求资源。
+Cache-Control:max-age=10 设置缓存最大的有效时间，但是这个参数定义的是时间大小（比如：60）而不是确定的时间点。单位是[秒 seconds]。
+Cache-Control:no-store 在任何条件下，响应都不会被缓存，并且不会被写入到客户端的磁盘里，这也是基于安全考虑的某些敏感的响应才会使用这个。
+
+// 常用的http响应头
+Content-Type： 告诉客户端，资源文件的类型，还有字符编码，
+
+Content-Encoding:gzip 告诉客户端，服务端发送的资源是采用gzip编码的，客户端看到这个信息后，应该采用gzip对资源进行解码。
+
+Date: Tue, 03 Apr 2018 03:52:28 GMT 这个是服务端发送资源时的服务器时间，
+
+Access-Control-Allow-Origin 
+Access-Control-Allow-Origin: *   *号代表所有网站可以跨域资源共享，如果当前字段为*那么
+Access-Control-Allow-Credentials就不能为trueAccess-Control-Allow-Origin: www.baidu.com 指定哪些网站可以跨域资源共享
+
+Etag
+
+Last-Modified
+Expires
+
+//TCP链接
+SYN表示同步
+ACK表示确认
+客户端想和服务器同步
+服务器会在报文中把SYN和ACK开启
+
+// 为什么是四次挥手
+因为服务端给客户端发送ACK确认后并未真正关闭服务器，可能还有需要发送的数据
+要等服务端发完数据之后再发送一个ACK和SYC来进行最后的确认
+客户端会发送ACK确认结束
+
+//Http是一个协议
+//https基于HTTP协议进行了加密
+ssl/tls加密
+tls加密
+双方用一样的规则加密（对称加密）如果规则被破解
+非对称加密 用两个密钥（一个私钥和一个公钥）双方都有各自的私钥 
+私钥存在服务器里
+数据经过公钥加密就只能被私钥解密
+数据经过私钥解密就只能经过公钥解密
+
+服务端存有公钥和私钥
+客户端有公钥，用公钥把数据加密
+只有服务端的私钥才能解密
+
+ssl证书
+表面域名属于谁的，里面还包含了公钥和私钥
+服务器安装ssl证书以后 用户通过https来访问服务器了
+</script>
+</body>
+</html>

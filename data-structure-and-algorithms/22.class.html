@@ -1,0 +1,78 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-22 17:48:08
+ * @LastEditTime: 2022-05-05 16:13:42
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.两数之和.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title></title>
+	</head>
+	<body>
+                <input type='text'>
+                <button class="but1">按钮1</button>
+                <button class="but2">按钮2</button>
+                <p></p>
+        </body>
+	<script>
+                const input = document.querySelector('input')
+                const button1 = document.querySelector('but1')
+                const button2 = document.querySelector('but2')
+                const p = document.querySelector('p')
+                // class(类)
+                class Bullshit {
+                        static tips(){
+                                return '温馨提示'
+                        }
+                        static welcome(){
+                                p.innerHTML = this.tips
+                        }
+                constructor (text, color) {//我们要让每个都有自己的特有属性
+                        this.text = text
+                        this.color = color
+                }
+                show(){//方法
+                        p.innerHtml = this.text + input.value
+                        p.style.color = this.color
+                }
+                set extra(value){
+                        this.value = value
+                        p.innerHtml += this.value
+                }
+                get extra(value){
+                        return `这是废话${this.text}${this.value}`
+                }
+                }
+                class son extends Bullshit{
+                        constructor(text,color, fontSize){
+                                super(text,color)//在子类里写this（给子类添加属性）之前一定要写super
+                                // 子类不能重写父类的属性
+                                this.fontSize = fontSize//子类还可以有自己的属性 
+                        }
+                        show(){//子类重写方法
+                        p.innerHtml = this.text + input.value
+                        p.style.color = this.color
+                        p.style.fontSize = this.fontSize
+                        }
+                }
+                button1.addEventListener('click',()=>{
+                        const bullshit = new Bullshit('xxx', "#00a1d6")
+                        bullshit.show()
+                        bullshit.extra('FI')
+                        console.log(bulishit.extra);
+                })
+                button2.addEventListener('click',()=>{
+                        const bullshitson = new son('666', "#00a1d6", '30px')
+                        bullshitson.show()
+                })
+                p.addEventListener('click',()=>{
+                        Bullshit.welcome()
+                })
+	</script>
+</html>

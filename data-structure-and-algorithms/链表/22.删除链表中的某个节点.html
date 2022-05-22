@@ -1,0 +1,77 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-21 17:39:49
+ * @LastEditTime: 2022-05-11 17:45:56
+ * @LastEditors: zeng 1805674660@qq.com
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\linklist.html
+-->
+<!--
+ * @Author: your name
+ * @Date: 2022-04-20 17:02:55
+ * @LastEditTime: 2022-04-21 17:38:23
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22. queue.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美 - 链表</title>
+	</head>
+	<body></body>
+	<script>
+        // linklist 链表
+        // 反转链表 (不是值反转 是指向反转)
+        // 链表是零散结构 数组是零散有序结构 频繁删除或者新增某个值 适合使用链表
+        // 删除一个不影响其他的结构 其他值的key也无需变化 
+        // 所以链表新增删除快 查询慢
+        // 数组查询快 新增删除慢 删除一个影响整个数组下标
+
+        // 链表的应用
+        //删除链表的某个节点
+        var deleteNode = function(node) {
+            node.val = node.next.val
+            node.next = node.next.next
+        };
+        // 删除链表中倒数第N个节点
+        var removeNthFromEnd = function(head, n) {
+            let fast = head
+            let slow = head
+            for (let i = 0; i < n; i++) { // 快指针移动N步
+                fast = fast.next
+            }
+            if(fast == null){// 返回头节点
+                return head.next   
+            }
+            while(fast !== null){
+               fast = fast.next
+               slow = slow.next
+            }
+            slow.next = slow.next.next
+            return head
+        }
+        // 反转链表
+        var reverseList = function(head) {
+            let pre = null
+            let cur = null
+            let listnext = head
+            while (listnext) {
+                if(!pre && cur){
+                    delete cur.next
+                }
+                if(pre && cur){
+                    cur.next = pre
+                }
+                pre = cur
+                cur = listnext
+                listnext = listnext.next
+            }
+            cur.next = pre
+            return cur
+        };
+	</script>
+</html>

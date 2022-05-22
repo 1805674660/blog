@@ -1,0 +1,237 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-22 14:42:46
+ * @LastEditTime: 2022-04-22 16:01:03
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.链表实现队列.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美--listpartition</title>
+	</head>
+	<body></body>
+	<script>
+                const n0 = {
+                        value:120,
+                        rand:{
+                        value:120,
+                        next:null
+                },
+                        next: {
+                        value:10,
+                        next: {
+                        value:20,
+                        next: {
+                        value:10,
+                        next: {
+                        value:120,
+                        next:null
+                }
+                }
+                }
+                }
+                }
+                const n1 = {
+                        value:120,
+                        next: {
+                        value:10,
+                        next: {
+                        value:20,
+                        next: {
+                        value:10,
+                        next: {
+                        value:120,
+                        // next:null
+                }
+                }
+                }
+                }
+                }
+                // 链表的partition方法
+        const listpartition = function(head,pivot){
+              let sH = null
+              let sT = null
+              let eH = null
+              let eT = null
+              let mH = null
+              let mT = null
+              let next = null
+              while (head != null) {
+                      next = head.next
+                      head.next = null
+                      if(head.value<pivot){
+                              if(sH == null){
+                                sH = head
+                                sT = head 
+                              }else{
+                                sT.next = head  
+                                sT = head
+                              }
+                      }else if(head.value == pivot){
+                                if(eH == null){
+                                eH = head
+                                eT = head 
+                              }else{
+                                eT.next = head  
+                                eT = head
+                              }
+                      }else{
+                        if(mH == null){
+                                mH = head
+                                mT = head 
+                              }else{
+                                mT.next = head  
+                                mT = head
+                              }
+                      }
+                      head = next
+              }
+              if(sT != null){
+                              sT.next = eH
+                              eT = eT == null? sT :eT // 谁去连大于区域的头，谁变成et
+                      }
+                      if(eT != null){
+                              eT.next = mH
+
+                      }
+                      return sH !==null ? sH : (eH !=null? eH : mH)
+        }
+        // console.log(listpartition(n0, 50));
+
+        // 判断链表是否是回文
+        // 假设他是栈
+        const Stack = function(node){
+        }
+        //  思路 第一种方法 把链表压入栈中 栈先进后出 和原链表比较 有一个不一样返回false
+        const ispalindrom1= function(head){
+                const stack = new Stack
+                let cur = head
+                while (cur != null) {
+                        stack.push(cur)
+                        cur = cur.next 
+                }
+                while (head != null){
+                        if(head.value != stack.pop().value){
+                                return false
+                        }
+                        head = head.next
+                }
+                return true
+        }
+        //  思路 第二种方法 用快慢指针 第一个指针走一步 第二个走两步 找到中值 压入后一半进栈
+        const ispalindrom2 = function(head){
+                if(head == null || head.next ==null){
+                        return true
+                }
+                let right = head.next
+                let cur = head
+                while (cur.next != null && cur.next.next !=null) {
+                        right = right.next
+                        cur = cur.next.next
+                }
+                const stack = new Stack
+                while (right != null) {
+                        stack.push(right)
+                        right = right.next 
+                }
+                while (!stack.isEmpty()){// 判断栈里是否为空
+                        if(head.value != stack.pop().value){
+                                return false
+                        }
+                        head = head.next
+                }
+                return true
+        }
+        //  思路 第三种方法 用快慢指针 第一个指针走一步 第二个走两步 找中值后让最后一个node指向mid的next，mid的next指向null
+        const ispalindrom3 = function(head){
+                if(head == null || head.next ==null){
+                        return true
+                }
+                let n1 = head
+                let n2 = head
+                while (n2.next != null && n2.next.next !=null) {
+                        n1 = n1.next // n1->mid
+                        n2 = n2.next.next //n2->end
+                }
+                n2 = n1.next
+                n1.next = null
+                let n3 = null
+                while (n2 != null) { // 右半部分逆序
+                        n3 = n2.next
+                        n2.next = n1
+                        n1 = n2
+                        n2 = n3
+                }
+                n3 = n1 //存储为了把逆序部分恢复
+                n2 = head
+                let res = true
+                while (n1 != null && n2!=null) {
+                        if(n1.value != n2.value){
+                                res = false
+                                break
+                        }
+                        n1 = n1.next
+                        n2 = n2.next // 两边往中间走
+                }
+                n1 = n3.next;
+                n3.next = null
+                while (n1 != null) { //将逆序数组复原
+                        n2 = n1.next
+                        n1.next = n3
+                        n3 = n1
+                        n1 = n2
+                }
+                return res
+        }
+        // console.log(ispalindrom3(n0));
+        // console.log(n0);
+
+        // 题二 一种特殊的单链表节点 rand指针是单链表节点结构中新增的指针 可指向任意一个节点，也可指向null
+        // 请师兄一个函数完成这个链表的复制，并返回新链表的头节点
+        // 要求时间复杂度o（n）空间o(1)、
+
+        // 利用克隆节点放的位置关系
+        const copylistwithrand = function(head){
+                if(head == null){
+                        return null
+                }
+                let cur = head
+                let next = null
+                while(cur !==null){ // 在节点的next创建一个新节点
+                        next = cur.next
+                        cur.next  = new Object(cur.value)
+                        console.log(cur.next);
+                        // cur.next = Object.create(cur.value)
+                        cur.next.next = next
+                        cur = next
+                }
+                cur= head
+                let curCopy = null
+                while(cur != null){
+                        next = cur.next.next // 只关心复制节点rand的指向 一次跳两
+                        curCopy = cur.next //拿到复制节点
+                        curCopy.rand = cur.rand != null? cur.rand.next : null // 利用克隆节点放的位置关系 curCopy.rand必为cur.rand的下一个
+                        cur = next
+                }
+                // 在分离
+                let res = head.next
+                cur= head
+                //split
+                while(cur != null){
+                        next = cur.next.next
+                        curCopy = cur.next
+                        cur.next = next
+                        curCopy.next = next !=null ? next.next : null
+                        cur = next
+                }
+                return res
+        }
+        console.log(copylistwithrand(n0));
+        console.log(n0);
+	</script>
+</html>

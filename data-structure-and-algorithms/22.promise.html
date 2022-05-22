@@ -1,0 +1,216 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-22 17:48:08
+ * @LastEditTime: 2022-05-06 11:50:50
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.两数之和.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title></title>
+	</head>
+	<body></body>
+	<script>
+//        class MyPromise {
+//                 constructor(fn){
+//                 // 存储 reslove 回调函数列表
+//                 this.callbacks = []
+//                 const resolve = (value) => {
+//                 this.data = value // 返回值给后面的 .then
+//                 while(this.callbacks.length) {
+//                         let cb = this.callbacks.shift()
+//                         cb(value)
+//                 }
+//                 }
+//                 fn(resolve)
+//                 }
+//                 then(onResolvedCallback) {
+//                 return new MyPromise((resolve) => {
+//                 this.callbacks.push(() => {
+//                         const res = onResolvedCallback(this.data)
+//                         if (res instanceof MyPromise) {
+//                         res.then(resolve)
+//                         } else {
+//                         resolve(res)
+//                         }
+//                 })
+//                 })
+//                 }
+//                 }
+//                 // 这是测试案例
+//                 new MyPromise((resolve) => {
+//                 setTimeout(() => {
+//                 resolve(1)
+//                 }, 1000)
+//                 }).then((res) => {
+//                 console.log(res)
+//                 return new MyPromise((resolve) => {
+//                 setTimeout(() => {
+//                         resolve(2)
+//                 }, 1000)
+//                 })
+//                 }).then(res =>{console.log(res)})5
+
+class Mypromise {
+        //创建静态属性
+        static PENDING = '等待'
+        static FULFILLED = '成功'
+        static REJECTED = '拒绝'
+        constructor(func){// 传入回调函数
+                this.status = Mypromise.PENDING //状态
+                this.result = null //结果
+                this.resolveCallbacks = [] //保留成功结果
+                this.rejectCallbacks = []  //保留失败结果
+                try {
+                        func(this.resolve.bind(this),this.reject.bind(this));// 执行 resolve和reject也是以函数形式执行的
+                } catch (error) {
+                        this.reject(error)
+                }
+                
+                // 
+        }
+        //创建resolve方法
+        resolve(result){
+                setTimeout(()=>{ // 保证了resolve方法是在事件循环的末尾执行
+                     if(this.status === Mypromise.PENDING){
+                        this.status = Mypromise.FULFILLED
+                        this.result = result
+                        this.resolveCallbacks.forEach(callback=>{ //循环then保留的待执行函数，然后逐步执行
+                                callback(result)
+                        })
+                }   
+                })
+                
+        }
+        reject(result) {
+                setTimeout(()=>{// 同理
+                  if(this.status === Mypromise.PENDING){
+                                this.status = Mypromise.REJECTED
+                                this.result = result
+                                this.rejectCallbacks.forEach(callback=>{// 同理
+                                        callback(result)
+                                })
+                        }      
+                })
+                
+        }
+        then(onFULFILLED, onREJECTED){//onFULFILLED这两个也是函数 then会传入两个参数
+                // promise链式调用关键
+                return new Mypromise((resolve,reject)=>{//我们让then方法返回一个新的promise 新的promise就有自己的then方法
+                        // 处理一个参数为空是的情况
+                        onFULFILLED = typeof onFULFILLED === "function" ? onFULFILLED :()=>{}
+                        onREJECTED = typeof onREJECTED === "function" ? onREJECTED :()=>{}
+                        // 处理then为待定状态 (但此时resolve和reject可能还没拿到结果)// 所以我们需要等待resolve和reject执行完之后再执行then
+                        if(this.status === Mypromise.PENDING){
+                                this.rejectCallbacks.push(()=>{
+                                        const res = onREJECTED(this.result)
+                                        if(res instanceof Mypromise){
+                                                res.then(reject)
+                                        }else{
+                                                reject(res)
+                                        }
+                                })//因此我们要创建数组来保留函数（先入先出）
+                                this.resolveCallbacks.push(()=>{
+                                        const res = onFULFILLED(this.result)
+                                        if(res instanceof Mypromise){
+                                                res.then(resolve)
+                                        }else{
+                                                resolve(res)
+                                        }
+                                })
+                        }
+                        if(this.status === Mypromise.FULFILLED){
+                                setTimeout(()=>{ // promise完成异步调用的关键
+                                onFULFILLED(this.result)
+                                })
+                        }
+                        if(this.status === Mypromise.REJECTED){
+                                setTimeout(()=>{ // promise完成异步调用的关键
+                                        onREJECTED(this.result)
+                                })
+                        }
+                })
+        }
+}
+console.log('第一步');
+
+new Mypromise((resolve) => {
+                setTimeout(() => {
+                resolve(1)
+                }, 1000)
+                }).then((res) => {
+                console.log(res)
+                return new Mypromise((resolve) => {
+                setTimeout(() => {
+                        resolve(2)
+                }, 1000)
+                })
+                }).then(res =>{console.log(res)})
+
+// const mypromise = new Mypromise((resolve,reject)=>{
+//         console.log('第二步');
+//         resolve('这次一定')
+//         // setTimeout(()=>{  // ---------------------------------这里promise是待定状态 then会保存该函数
+//         //    resolve('下次一定') //----------------------------这里执行resolve时发现resolveCallbacks还有未执行的回调
+//         //    console.log('第四步');
+//         // })
+//         // throw new Error('报错啦') // 完善报错
+// });
+// mypromise.then(
+//         result =>{console.log(result);},//成功回调
+//         result =>{console.log(result);}//失败回调
+// ).then(
+//         result =>{console.log(result);},//成功回调
+//         result =>{console.log(result);}//失败回调
+// )
+// // mypromise.then((res)=>{
+// //         console.log(res);
+// // },)
+// console.log('第三步');
+
+// //真实的promise
+// console.log('第一步');
+// let promise = new Promise((resolve)=>{
+//         console.log('第二步');
+//         resolve('下次一定')
+// })
+// promise.then((res)=>{
+//         console.log(res);
+// })
+// console.log('第三步');
+
+
+// //真实的promise
+console.log('第一步');
+let promise = new Promise((resolve)=>{
+        resolve(true)
+        console.log('第二步');
+})
+console.log(promise);
+Object.prototype.toString(promise)
+promise.then((res)=>{
+        console.log(res);
+})
+console.log('第三步');
+
+// //真实的promise
+// console.log('第一步');
+// let promise = new Promise((resolve)=>{
+//         console.log('第二步');
+//         setTimeout(()=>{
+//            resolve('下次一定')
+//            console.log('第四步');
+//         })
+        
+// })
+// promise.then((res)=>{
+//         console.log(res);
+// })
+// console.log('第三步');
+	</script>
+</html>

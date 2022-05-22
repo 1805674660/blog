@@ -1,0 +1,85 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-22 17:48:08
+ * @LastEditTime: 2022-04-27 16:10:18
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.两数之和.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美 - 堆</title>
+	</head>
+	<body></body>
+	<script>
+        // 堆是一个完全二叉树 （最大堆：父节点>=子节点）（最小堆：父节点<=子节点）左右不分大小
+        // 堆比bst结构灵活
+        //满二叉树一定是完全二叉树
+        // 堆在物理结构上是一个数组（易存储
+        // 逻辑结构是一个二叉树（易于优化（二分
+
+        // 用一个数组表示一个堆的逻辑
+        // const arr = [1,2,3,4,5,6,7,8]
+        // // 节点关系
+        // const parentIndex = Math.floor(i/2)
+        // const leftIndex = 2*i
+        // const right = 2*i+1
+
+        // 实现一个最大堆
+        const heapSort = function(arr){
+                if(arr==null|| arr.length<2){
+                        return
+                }
+                // 用户给定数组变成大根堆
+                for (let i = 0; i < arr.length; i++) {// O(n)
+                        heapInsert(arr,i) // O(logN)
+                }
+                let heapSize = arr.length// 定义堆的有效长度
+                console.log('arr',arr); // [9, 8, 6, 5, 4, 1, 2, 5, 3, 2]
+                // 把大根堆排序每次出最大值
+                swap(arr,0,--heapSize)// 根节点与最后一个节点交换
+                while(heapSize>0){// O(n)
+                        heapify(arr,0,heapSize) // O(logN)
+                        swap(arr,0,--heapSize) // 再次交换根节点位置
+                }
+        }
+        //交换方法
+       function swap(arr,i,j) {
+                let temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+        }
+        //某个数现在处在index位置，往上继续移动
+        function heapInsert (arr,index) {
+                // console.log('arr[(index-1)/2', arr[Math.ceil((index-1)/2)]);
+                while(arr[index]>arr[Math.ceil((index-1)/2)]){
+                        swap(arr,index,Math.ceil((index-1)/2))// 交换位置
+                        index = Math.ceil((index-1)/2)
+                }
+        }
+        //某个数现在处在index位置，往下继续移动
+        function heapify(arr,index,heapSize){
+                let left = index*2+1//定义一个左节点后面要用
+                while(left<heapSize){//判断下方还有孩子
+                        //中找出父子最大的节点 left+1是右节点
+                        let largest = left+1<heapSize && arr[left+1]>arr[left]?left+1:left
+                                largest = arr[index]>arr[largest]?index:largest
+                        if(largest == index){
+                                break
+                        }
+                        swap(arr,largest,index)
+                        index = largest
+                        left = index*2+1
+                }
+        }
+        const array = [4, 6, 8, 5, 9, 1, 2, 5, 3, 2];
+	console.log('原始array:', array);
+	heapSort(array);
+        console.log('newArr:', array);
+	</script>
+</html>
+  

@@ -1,0 +1,109 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-20 11:13:48
+ * @LastEditTime: 2022-04-29 17:06:47
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\二分.html
+-->
+
+ <!DOCTYPE html>
+ <html lang="en">
+     <head>
+         <meta charset="UTF-8" />
+         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+         <title>JavaScript 数据结构与算法之美 - 基数排序</title>
+     </head>
+     <body></body>
+     <script>
+         sourceMap是一项将编译、打包、压缩后的代码映射回源代码的技术，由于打包压缩后的代码并没有阅读性可言，
+         一旦在开发中报错或者遇到问题，直接在混淆代码中debug问题会带来非常糟糕的体验，sourceMap可以帮助我们快速定位到源代码的位置，
+         提高我们的开发效率。sourceMap其实并不是Webpack特有的功能，而是Webpack支持sourceMap，像JQuery也支持souceMap。
+         既然是一种源码的映射，那必然就需要有一份映射的文件，来标记混淆代码里对应的源码的位置，通常这份映射文件以.map结尾，里边的数据结构大概长这样：
+            {
+            "version" : 3,                          // Source Map版本
+            "file": "out.js",                       // 输出文件（可选）
+            "sourceRoot": "",                       // 源文件根目录（可选）
+            "sources": ["foo.js", "bar.js"],        // 源文件列表
+            "sourcesContent": [null, null],         // 源内容列表（可选，和源文件列表顺序一致）
+            "names": ["src", "maps", "are", "fun"], // mappings使用的符号名称列表
+            "mappings": "A,AAAB;;ABCDE;"            // 带有编码映射数据的字符串
+            }
+            其中mappings数据有如下规则：
+
+            生成文件中的一行的每个组用“;”分隔；
+            每一段用“,”分隔；
+            每个段由1、4或5个可变长度字段组成；
+
+            有了这份映射文件，我们只需要在我们的压缩代码的最末端加上这句注释，即可让sourceMap生效：
+            //# sourceURL=/path/to/file.js.map
+            复制代码
+            有了这段注释后，浏览器就会通过sourceURL去获取这份映射文件，通过解释器解析后，实现源码和混淆代码之间的映射。因此sourceMap其实也是一项需要浏览器支持的技术。
+            如果我们仔细查看webpack打包出来的bundle文件，就可以发现在默认的development开发模式下，每个_webpack_modules__文件模块的代码最末端，都会加上//# sourceURL=webpack://file-path?，从而实现对sourceMap的支持。
+
+
+         实际上在Webpack内部默认也只能够处理JS模块代码，在打包过程中，会默认把所有遇到的文件都当作 JavaScript代码进行解析，
+         因此当项目存在非JS类型文件时，我们需要先对其进行必要的转换，才能继续执行打包任务，这也是Loader机制存在的意义。、
+         会按顺序链式调用每一个loader，前一个loader返回的内容会作为下一个loader的入参。因此loader的开发需要遵循一些规范，
+         比如返回值必须是标准的JS代码字符串，以保证下一个loader能够正常工作，同时在开发上需要严格遵循“单一职责”，
+         只关心loader的输出以及对应的输出。
+         loader函数中的this上下文由webpack提供，可以通过this对象提供的相关属性，获取当前loader需要的各种信息数据，
+         事实上，这个this指向了一个叫loaderContext的loader-runner特有对象。
+
+
+         既然基于发布订阅模式，那么知道Webpack到底提供了哪些事件钩子供插件开发者使用是非常重要的，
+         上文提到过compiler和compilation是Webpack两个非常核心的对象，其中compiler暴露了和 Webpack整个生命周期相关的钩子（compiler-hooks），
+         而compilation则暴露了与模块和依赖有关的粒度更小的事件钩子
+
+         // Tapable的简单使用
+            const { SyncHook } = require("tapable");
+
+            class Car {
+                constructor() {
+                    // 在this.hooks中定义所有的钩子事件
+                    this.hooks = {
+                        accelerate: new SyncHook(["newSpeed"]),
+                        brake: new SyncHook(),
+                        calculateRoutes: new AsyncParallelHook(["source", "target", "routesList"])
+                    };
+                }
+
+                /* ... */
+            }
+
+
+            const myCar = new Car();
+            // 通过调用tap方法即可增加一个消费者，订阅对应的钩子事件了
+            myCar.hooks.brake.tap("WarningLampPlugin", () => warningLamp.on());
+            复制代码
+            Plugin的开发和开发Loader一样，需要遵循一些开发上的规范和原则：
+
+            插件必须是一个函数或者是一个包含 apply 方法的对象，这样才能访问compiler实例；
+            传给每个插件的 compiler 和 compilation 对象都是同一个引用，若在一个插件中修改了它们身上的属性，会影响后面的插件;
+            异步的事件需要在插件处理完任务时调用回调函数通知 Webpack 进入下一个流程，不然会卡住;
+
+            了解了以上这些内容，想要开发一个 Webpack Plugin，其实也并不困难。
+            Plugin的开发和开发Loader一样，需要遵循一些开发上的规范和原则：
+
+            插件必须是一个函数或者是一个包含 apply 方法的对象，这样才能访问compiler实例；
+            传给每个插件的 compiler 和 compilation 对象都是同一个引用，若在一个插件中修改了它们身上的属性，会影响后面的插件;
+            异步的事件需要在插件处理完任务时调用回调函数通知 Webpack 进入下一个流程，不然会卡住;
+
+            了解了以上这些内容，想要开发一个 Webpack Plugin，其实也并不困难。
+            class MyPlugin {
+            apply (compiler) {
+                // 找到合适的事件钩子，实现自己的插件功能
+                compiler.hooks.emit.tap('MyPlugin', compilation => {
+                    // compilation: 当前打包构建流程的上下文
+                    console.log(compilation);
+                    
+                    // do something...
+                })
+            }
+            }
+
+     </script>
+ </html>
+ 
+

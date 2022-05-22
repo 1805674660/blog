@@ -1,0 +1,44 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-22 17:48:08
+ * @LastEditTime: 2022-05-17 18:06:13
+ * @LastEditors: zeng 1805674660@qq.com
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.两数之和.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美 - 动态规划-移动0到数组的末尾</title>
+	</head>
+	<body></body>
+	<script>
+        const arr = [1,0,2,3,0,0,4,5,0,0,0,6,7,0,8]
+        const mvz = function(arr){
+            const len = arr.length
+            if(len==0) return
+            let i // 双指针
+            let j = -1
+            for (let i = 0; i < len; i++) {
+                if(arr[i]===0){
+                        // 第一个0 给j指针赋值
+                        if(j<0){
+                                j=i
+                        }
+                }
+                if(arr[i] !== 0 && j>=0){
+                        // 交换值
+                        const n=arr[i]
+                        arr[i] = arr[j]
+                        arr[j] = n
+                        j++ //保证j永远指向第一个0
+                }
+            }
+        }
+        mvz(arr)
+        console.log(arr);
+	</script>
+</html>

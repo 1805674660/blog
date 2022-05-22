@@ -1,0 +1,147 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-22 14:42:46
+ * @LastEditTime: 2022-04-22 16:01:03
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.链表实现队列.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美 - 链表实现队列</title>
+	</head>
+	<body></body>
+	<script>
+        // 队列在链表的头部出 尾部进
+                // 链表队列
+                const MyQueue = function(){
+                        this.head = null  // 链表的头部
+                        this.tail = null //链表的尾部
+                        this.length = 0
+                        this.add = function(n){
+                                const newnode = {
+                                        value:n,
+                                        next:null
+                                }
+                                //处理head
+                                if(this.head===null){
+                                        this.head = newnode
+                                }
+                                // 处理tail
+                                const tailnode = this.tail
+                                if(tailnode){
+                                        tailnode.next = newnode
+                                }
+                                // 改变尾部指向防止丢失
+                                this.tail = newnode
+                                // 记录长度
+                                this.length++
+
+                        }
+                        this.deletel = function(){
+                                const headnode = this.head
+                                if(headnode===null) return null
+                                if(this.length === 0) return null
+                                // 取值
+                                const value = headnode.value
+                                this.length--
+                                // 出队列修改头部指向
+                                this.head = headnode.next
+                                return value
+                        }
+                        this.data = function(){
+                                return this.head
+                        }
+                        this.getlength  = function(){
+                                // length要单独存储 不能遍历 时间复杂度On
+                                return this.length
+                        }
+                }
+                // 数组对列
+                function Queue() {
+			this.items = [];
+
+			// 向队列尾部添加元素
+			this.enqueue = function(element) {
+				this.items.push(element);
+			};
+
+			// 移除队列的第一个元素，并返回被移除的元素
+			this.dequeue = function() {
+				return this.items.shift();
+			};
+
+			// 返回队列的第一个元素
+			this.front = function() {
+				return this.items[0];
+			}; 
+
+			// 判断是否为空队列
+			this.isEmpty = function() {
+				return this.items.length === 0;
+			};
+
+			// 获取队列的长度
+			this.size = function() {
+			return this.items.length;
+			};
+
+			// 清空队列
+			this.clear = function() {
+				this.items = [];
+			};
+
+			// 打印队列里的元素
+			this.print = function() {
+				console.log(this.items.toString());
+			};
+		}
+
+                // const Q = new MyQueue
+                // Q.add(100)
+                // console.log(Q.data());
+                // Q.add(200)
+                // console.log(Q.data());
+                // Q.add(300)
+                // console.log(Q.data());
+                // console.log(Q.getlength());
+                // Q.deletel()
+                // console.log(Q.data());
+                // Q.deletel()
+                // console.log(Q.data());
+                // Q.deletel()
+                // console.log(Q.data());
+                // console.log(Q.getlength());
+                // const A = new MyQueue
+                // A.add(100)
+                // A.add(200)
+                // A.add(300)
+                // console.log(Q.getlength());
+                // console.log(A.getlength());
+                const Q = new MyQueue
+                const S = new Queue
+                console.time('666')
+                for (let index = 0; index < 10 * 10000; index++) {
+                        Q.add(index)
+                }
+                for (let index = 0; index < 10 * 10000; index++) {
+                        Q.deletel(index)
+                }
+                console.timeEnd('666')
+
+                console.time('testForEach')
+                for (let index = 0; index < 10 * 10000; index++) {
+                        S.enqueue(index)
+                }
+                for (let index = 0; index < 10 * 10000; index++) {
+                        S.dequeue(index)
+                }
+                console.timeEnd('testForEach')
+                // 数组出列复杂度是on
+
+	</script>
+</html>

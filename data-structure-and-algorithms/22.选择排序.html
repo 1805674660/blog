@@ -1,0 +1,50 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-22 17:48:08
+ * @LastEditTime: 2022-04-29 14:30:27
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.两数之和.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美 - 选择排序</title>
+	</head>
+	<body></body>
+	<script>
+                // 固定算法 固定思路
+        //       1到N-1次循环拿第一个数开始 第二次循环找到拿到数的最小值下标 交换（还是等差队列 复杂度为n*方
+        //       把小的先放前面一次放一个
+        const arr = [77,2,3,67,4]
+        const bubblesort  = function(arr) {
+                const len = arr.length
+                if (len == null || len<2)  return
+                for (let i = 0; i<len-1; i++) {
+                        let minIndex = i
+                        for (let j = i+1; j<len; j++) {
+                                minIndex =  arr[j]<arr[minIndex]? j: minIndex
+                        }
+                        const n =arr[i]
+                        arr[i] = arr[minIndex]
+                        arr[minIndex] = n
+                }
+        }
+        const bubblesort1  = function(arr) {
+                const len = arr.length
+                if (len == null || len<2)  return
+                for (let i = 0; i < len-1; i++) {
+                        let minIndex = i
+                        for (let j = i+1; j <len; j++) {
+                                minIndex = arr[j]>arr[minIndex]? minIndex:j  
+                        }
+                        swap(arr,i,minIndex)
+                }
+        }
+        bubblesort(arr)
+        console.log(arr);
+	</script>
+</html>

@@ -1,0 +1,88 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-22 17:48:08
+ * @LastEditTime: 2022-04-29 16:45:25
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.两数之和.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美</title>
+	</head>
+	<body></body>
+	<script>
+                // 深度优先遍历就是前序遍历
+                const preOrderUnRecur = function(head){
+                        if(head != null){
+                                let stack = new Stack()
+                                stack.add(head)
+                                while(!stack.isEmpty){
+                                        stack.pop()
+                                        if(head.right != null){
+                                                stack.push(head.right)
+                                        }
+                                        if(head.left != null){
+                                                stack.push(head.left)
+                                        }
+                                }
+                        }
+                }
+               //宽度优先遍历利用队列
+               const w = function(head){
+                       if(head == null) return
+                       let queue = new Queue()
+                       queue.add(head)
+                                while(!queue.isEmpty()){
+                                        let cur  = queue.pop()
+                                        console.log(cur.value);
+                                        if(cur.left != null){
+                                                queue.add(cur.left)
+                                        }
+                                        if(cur.right != null){
+                                                queue.add(cur.right)
+                                        }
+                                        
+                                }
+               }
+
+        //        宽度优先遍历利用队列数的层数 （我需要知道每层多少个节点）
+        const w1= function(head){
+                       if(head == null) return
+                       let queue = new Queue()
+                       queue.add(head)
+                       //利用hash表
+                       let levelMap = new HashMap()
+                       levelMap.put(head,1)
+                       let curLevel = 1
+                       let curLevelNodes = 0
+                       let max = 0
+                                while(!queue.isEmpty()){
+                                        let cur  = queue.poll()
+                                        let curNodeLevel = levelMap.get(cur)
+                                        if(curNodeLevel == curLevel){
+                                                curLevelNodes++
+                                        }else{
+                                                max = Math.max(max,curLevelNodes)
+                                                curLevel++
+                                                curLevelNodes = 1
+                                        }
+                                        console.log(cur.value);
+                                        if(cur.left != null){
+                                                levelMap.put(cur.left,curNodeLevel+1)
+                                                queue.add(cur.left)
+                                        }
+                                        if(cur.right != null){
+                                                levelMap.put(cur.right,curNodeLevel+1)
+                                                queue.add(cur.right)
+                                        }
+                                        
+                                }
+                                return max
+               }
+	</script>
+</html>

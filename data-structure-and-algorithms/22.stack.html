@@ -1,0 +1,65 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-20 16:18:01
+ * @LastEditTime: 2022-04-20 16:56:08
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.stack.html
+-->
+<!--
+ * @Author: your name
+ * @Date: 2022-03-30 09:35:45
+ * @LastEditTime: 2022-03-31 14:31:51
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\4. stack.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美 - 循环链表</title>
+	</head>
+	<body></body>
+	<script>
+        // 匹配规则函数
+        function isMatch(left,right){
+            if (left === '{' && right === '}') return true
+            if (left === '(' && right === ')') return true
+            if (left === '[' && right === ']') return true
+            return false
+        }
+		// Stack类
+		function matchBracket(str){
+            const length = str.length
+            if(length==0) return true
+            const stack = []
+            const leftsymbols = '{[(' //压栈
+            const rightsymbols = '}])' // 匹配出栈
+            for (let i = 0; i < length; i++) {
+                const s = str[i]
+                if(leftsymbols.includes(s)){
+                    // 入栈
+                    stack.push(s)
+                }else if(rightsymbols.includes(s)){
+                    // 匹配出栈
+                    const top = stack[stack.length-1]
+                    if(isMatch(top, s)){
+                        stack.pop()
+                    }else{
+                        return false
+                    }
+                }
+            }
+            if(stack.length == 0){
+                return true
+            }else{
+                return false
+            }
+        }
+        const str = "{a[d(f])d]s}"
+        console.log(matchBracket(str));
+	</script>
+</html>

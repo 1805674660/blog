@@ -1,0 +1,87 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-21 17:39:49
+ * @LastEditTime: 2022-04-22 14:40:02
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\linklist.html
+-->
+<!--
+ * @Author: your name
+ * @Date: 2022-04-20 17:02:55
+ * @LastEditTime: 2022-04-21 17:38:23
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22. queue.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美 - 链表</title>
+	</head>
+	<body></body>
+	<script>
+        // linklist 链表
+        // 反转链表 (不是值反转 是指向反转)
+        // 链表是零散结构 数组是零散有序结构 频繁删除或者新增某个值 适合使用链表
+        // 删除一个不影响其他的结构 其他值的key也无需变化 
+        // 所以链表新增删除快 查询慢
+        // 数组查询快 新增删除慢 删除一个影响整个数组下标
+
+        // 链表的应用
+        
+        const Mylinklist = function(arr){
+            const length = arr.length
+            if(length === 0) throw new Error('arr is empty')
+            // arr = [100, 200, 300]
+            // {value:300}
+            // {value:200 next:{value:300}}
+            // {value:300 next:{value:200 next:{value:300}}}
+            // 最后一项没有next
+            let curNode = {
+                value:arr[length-1]
+            }
+            if(length === 1) return curNode
+            for(let i = length-2;i>=0;i--){
+                curNode = {
+                    value:arr[i],
+                    next:curNode
+                }
+            }
+            return curNode
+        }
+        let arr = [100, 200, 300]
+        console.log(Mylinklist(arr));
+        let linklistnode = Mylinklist(arr)
+        // 反转单项链表，并返回反转之后的head node
+        const reverseList = function(linklistnode){
+            // 定义三个指针
+            let preNode = undefined
+            let curNode = undefined
+            let nextNode = linklistnode
+
+            while(nextNode){
+                // 第一个元素，要删掉next
+                if(curNode && !preNode){
+                   delete curNode.next
+                }
+                // 反转指向
+                if(curNode && preNode){
+                    curNode.next = preNode
+                }
+                // 指针执行
+                preNode = curNode
+                curNode = nextNode
+                nextNode = nextNode.next
+                
+            }
+            // 处理nextnode为undefind的情况 这时最后一下curnode指向还没有
+            curNode.next = preNode
+            return curNode
+        }
+        console.log(reverseLinklist(linklistnode));
+	</script>
+</html>

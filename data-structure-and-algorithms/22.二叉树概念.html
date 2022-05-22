@@ -1,0 +1,87 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-22 17:48:08
+ * @LastEditTime: 2022-04-27 16:10:19
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.两数之和.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美 - 二叉树</title>
+	</head>
+	<body></body>
+	<script>
+        // 二叉树的三种遍历 前中后
+        const true1 = {
+            value:5,
+            left:{
+                value:3,
+                left:{
+                    value:2,
+                    left:null,
+                    right:null
+                },
+                right:{
+                    value:4,
+                    left:null,
+                    right:null
+                }
+            },
+            right:{
+                value:7,
+                left:{
+                    value:6,
+                    left:null,
+                    right:null
+                },
+                right:{
+                    value:8,
+                    left:null,
+                    right:null
+                }
+            }
+        }
+        let arr = []
+        // 前序遍历
+        const proOrderTree  = function(node) {
+            if (node ==null) return
+            console.log(node.value);
+            proOrderTree(node.left)
+            proOrderTree(node.right)
+        }
+        proOrderTree(true1)
+        // 中序遍历
+        const inOrderTree  = function(node) {
+            if (node ==null) return
+            inOrderTree(node.left)
+            console.log(node.value);
+            arr.push(node.value)
+            inOrderTree(node.right)
+        }
+        // inOrderTree(true1)
+        // 后序遍历
+        const postOrderTree  = function(node) {
+            if (node ==null) return
+            postOrderTree(node.left)
+            postOrderTree(node.right)
+            console.log(node.value);
+        }
+        postOrderTree(true1)
+
+        // 二叉搜索树（BST） （上层比下层大 右边比左边大）所以可以使用二分法 每次切割1/2 时间复杂度为logn
+        // 但是二叉树不一定平衡 不平衡时间复杂度达不到logN 所以存在红黑树和白树 来使得二叉树变成平衡二叉树
+        // （BSTT）红黑数利用红黑两种颜色 白树物理结构是多叉树 逻辑结构是二叉树
+
+        //求二叉搜索树的第K小值
+         const getkey = function(tree, n){
+             inOrderTree(tree)
+            return arr[n-1] || null
+         }
+         console.log(getkey(true1, 4));
+	</script>
+</html>

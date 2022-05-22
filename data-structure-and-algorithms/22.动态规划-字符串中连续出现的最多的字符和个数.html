@@ -1,0 +1,51 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-22 17:48:08
+ * @LastEditTime: 2022-04-27 17:19:05
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.两数之和.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美 - 22.动态规划-字符串中连续出现的最多的字符和个数</title>
+	</head>
+	<body></body>
+	<script>
+        const arr = [1,0,2,3,0,0,4,5,0,0,0,6,7,0,8]
+        const findcont = function(str){
+        const res ={
+                length:0,
+                char:''
+        }
+        const len = str.length
+        if(len==0) return res
+        let i = 0
+        let j = 0
+        let templenth = 0  //用于比较length的大小
+        for (; i < len; i++) {
+                if(str[i]===str[j]){
+                        templenth++
+                }
+                if(str[i] !== str[j] || i===length-1){
+                        if(templenth>res.length){
+                                res.length = templenth
+                                res.char = str[j]
+                        }
+                        templenth = 0
+                        if(i<len-1){
+                          j = i // 让j追是i进行二次比对
+                          i--// 防止i和j错开    
+                        }
+                        
+                }
+        }
+            return res
+        }
+        console.log(findcont(arr));
+	</script>
+</html>

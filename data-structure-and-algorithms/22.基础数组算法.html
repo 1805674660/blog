@@ -1,0 +1,185 @@
+<!--
+ * @Author: your name
+ * @Date: 2022-04-22 17:48:08
+ * @LastEditTime: 2022-05-09 17:15:50
+ * @LastEditors: zeng 1805674660@qq.com
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \blog2\data-structure-and-algorithms\22.两数之和.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>JavaScript 数据结构与算法之美 - 双数之和</title>
+	</head>
+	<body></body>
+	<script>
+        // 第一种解法 双for循环 ON2不可用
+        // 第二种解法 利用二分思想 双指针
+        const findtownumber = function(arr, n){
+            const res = []
+            const len = arr.length
+            if(len === 0) return res
+            let i = 0
+            let j = len-1
+            while(i<j){
+                const n1 = arr[i]
+                const n2 = arr[j]
+                const sum = arr[i]+ arr[j]
+                if(sum>n){
+                    j--
+                }else if(sum<n){
+                    i++
+                }else{
+                    res.push(arr[i],arr[j])
+                    // res.push()
+                    break
+                }
+            }
+            return res
+        }
+        // 数组有序
+       const findtownumber = function(arr,n){
+           let res = []
+           const len = arr.length
+           if(len == 0) return res
+           let i = 0
+           let j = len-1
+           while(i<j){
+               const n1 = arr[i]
+               const n2 = arr[j]
+               const sum = arr[i]+arr[j]
+               if(sum>n){
+                   j--
+               }else if(sum<n){
+                i++
+               }else{
+                   res.push(i,j)
+                   break
+               }
+           }
+           return res
+       }
+    //    数组无序 (双指针)
+       const findtownumber = function(arr,n){
+           let res = []
+           const len = arr.length
+           if(len == 0) return res
+           let i = 0
+           let j = 1
+           let max = len-1
+           while(arr[i]+arr[j] != n){
+               if(j == max){
+                   i++
+                    j=i
+               }
+               j++
+           }
+           res.push(i,j)
+           return res
+       }
+       //    数组无序 (哈希表)解法二
+       const findtownumber = function(nums,target){
+        let map = new Map();
+            for(let i = 0, len = nums.length; i < len; i++) {
+                if(map.has(target-nums[i])) { //查表中存在就返回
+                    return [map.get(target-nums[i]), i];
+                } else { //不存在就存入
+                    map.set(nums[i], i)
+                }
+            }
+            return null
+       }
+
+       //    两个数组的交集 II (哈希表)
+       const intersect = function(nums1,nums2){
+        if (nums1.length > nums2.length) {
+            return intersect(nums2, nums1);
+        }
+            let map = new Map();
+            let res = [], index = 0
+            for (const num of nums1) {
+                let count = map.get(num) || 0
+                map.set(num,count+1)
+            }
+            for (const num of nums2) {
+                let count = map.get(num) || 0
+                if(count>0){
+                    res[index++]=num
+                    count--
+                    if(count>0){
+                        map.set(num,count)
+                    }else{
+                        map.delete(num)
+                    }
+                }
+            }
+            return res
+       }
+       let nums1 = [4,9,4,4]
+       let nums2 = [9,4,9,8,4]
+       
+       console.log(intersect(nums1,nums2));
+       //    两个数组的交集 II (双指针)
+       const findtownumber = function(nums1,nums2){
+        let intersect = function (nums1, nums2) {
+        nums1.sort((a, b) => a - b);
+        nums2.sort((a, b) => a - b);
+        let l = 0, r = 0, ans = [];
+        while (l < nums1.length && r < nums2.length) {
+            if (nums1[l] === nums2[r]) {
+                ans.push(nums1[l]);
+                l++;
+                r++;
+            } else nums1[l] < nums2[r] ? l++ : r++;
+        }
+        return ans;
+    };
+       }
+       //    两个数组的交集 II (二分)
+       const intersect = function(nums1,nums2){
+
+           let len = nums1.length
+           const midIndex = Math.floor(len/2)
+           let left = []
+            let right = []
+            let res = []
+            for (let i = 0; i < nums1.length; i++) {
+                        if(i<midValue){
+                                left.push(nums1[i])
+                        }else{
+                                right.push(nums1[i])
+                        }
+                }
+                intersect(left,nums2)
+                intersect(right,nums2)
+            return 
+       }
+
+
+       //    删除排序数组的重复项
+       const findtownumber = function(nums){
+        const n = nums.length;
+            if (n === 0) {
+                return 0;
+            }
+            let fast = 1, slow = 1;
+            while (fast < n) {
+                if (nums[fast] !== nums[fast - 1]) {
+                    nums[slow] = nums[fast];
+                    ++slow;
+                }
+                ++fast;
+            }
+            console.log(slow);
+            let newnums = nums.splice(0,slow)
+            return newnums
+       }
+       const arr1 = [1, 1, '1', 17, true, true, false, false, 'true', 'a', {}, {}];
+       console.log(findtownumber(arr1));
+        const arr = [1,2,34,36,46,66]
+        console.log(findtownumber(arr, 80));
+	</script>
+</html>
